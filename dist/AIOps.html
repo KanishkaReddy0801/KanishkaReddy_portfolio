@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VanGuard AIOps — UX Research Report</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand-primary: #e65100;
+    --brand-deep: #b71c1c;
+    --brand-gradient: linear-gradient(135deg, #e65100, #b71c1c);
+    --bg-base: #f5f5f5;
+    --bg-white: #ffffff;
+    --text-primary: #222222;
+    --text-secondary: #666666;
+    --text-muted: #999999;
+    --border: #dddddd;
+    --accent-green: #2e7d32;
+    --accent-blue: #1565c0;
+    --accent-amber: #e65100;
+    --shadow-card: 0 2px 12px rgba(0,0,0,0.07);
+    --shadow-elevated: 0 8px 40px rgba(182,28,28,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ── SIDEBAR NAV ── */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 260px; height: 100vh;
+    background: var(--brand-gradient);
+    display: flex; flex-direction: column;
+    z-index: 100;
+    box-shadow: 4px 0 24px rgba(182,28,28,0.18);
+  }
+
+  .sidebar-brand {
+    padding: 32px 24px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .sidebar-brand h1 {
+    font-family: 'DM Serif Display', serif;
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .sidebar-brand p {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.75rem;
+    margin-top: 4px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .sidebar-label {
+    padding: 20px 24px 8px;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .sidebar nav { flex: 1; overflow-y: auto; padding: 0 12px 12px; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 400;
+    margin-bottom: 2px;
+    transition: background 0.15s, color 0.15s;
+    cursor: pointer;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+  }
+
+  .nav-item.active {
+    background: rgba(255,255,255,0.22);
+    font-weight: 600;
+  }
+
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    flex-shrink: 0;
+  }
+
+  .nav-item.active .nav-dot { background: #fff; }
+
+  .sidebar-footer {
+    padding: 20px 24px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .avatar {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 600; color: #fff;
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer-text p { color: #fff; font-size: 0.82rem; font-weight: 500; }
+  .sidebar-footer-text span { color: rgba(255,255,255,0.55); font-size: 0.72rem; }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    margin-left: 260px;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--brand-gradient);
+    padding: 72px 64px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 30%;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.9);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .hero h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3.2rem;
+    color: #fff;
+    line-height: 1.1;
+    max-width: 640px;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero h2 em {
+    font-style: italic;
+    color: rgba(255,255,255,0.75);
+  }
+
+  .hero-meta {
+    display: flex; gap: 32px; flex-wrap: wrap;
+    margin-top: 36px;
+  }
+
+  .hero-meta-item {
+    display: flex; flex-direction: column; gap: 3px;
+  }
+
+  .hero-meta-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    font-weight: 600;
+  }
+
+  .hero-meta-value {
+    font-size: 0.92rem;
+    color: #fff;
+    font-weight: 500;
+  }
+
+  /* ── CONTENT AREA ── */
+  .content {
+    padding: 56px 64px;
+    max-width: 960px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 72px;
+    scroll-margin-top: 24px;
+  }
+
+  .section-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--brand-primary);
+    background: rgba(230,81,0,0.08);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .section-header h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.75rem;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+
+  .section-intro {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 32px;
+    max-width: 720px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--bg-white);
+    border-radius: 12px;
+    box-shadow: var(--shadow-card);
+    padding: 28px 32px;
+    border: 1px solid var(--border);
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .card-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  /* ── STAT CARDS ── */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--bg-white);
+    border-radius: 10px;
+    padding: 20px 22px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+  }
+
+  .stat-card-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-card-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-card-sub {
+    font-size: 0.78rem;
+    color: var(--accent-green);
+    font-weight: 500;
+  }
+
+  /* ── FEATURE CARDS ── */
+  .feature-card {
+    background: var(--bg-white);
+    border-radius: 12px;
+    padding: 28px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--brand-gradient);
+    border-radius: 2px 0 0 2px;
+  }
+
+  .feature-card h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .feature-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .feature-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: rgba(230,81,0,0.08);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+  }
+
+  /* ── FINDINGS LIST ── */
+  .findings-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .findings-list li {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: var(--bg-white);
+    border-radius: 10px;
+    padding: 18px 22px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  }
+
+  .finding-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--brand-primary);
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  .finding-text {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .finding-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ── HIGHLIGHT BOX ── */
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(230,81,0,0.06) 0%, rgba(183,28,28,0.04) 100%);
+    border: 1px solid rgba(230,81,0,0.2);
+    border-left: 4px solid var(--brand-primary);
+    border-radius: 0 10px 10px 0;
+    padding: 22px 28px;
+    margin: 28px 0;
+  }
+
+  .highlight-box p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .highlight-box strong { color: var(--brand-primary); }
+
+  /* ── QUOTE ── */
+  .pullquote {
+    border-left: 4px solid var(--brand-primary);
+    padding: 16px 24px;
+    margin: 32px 0;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* ── MODULE TABLE ── */
+  .module-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--bg-white);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+    font-size: 0.88rem;
+  }
+
+  .module-table thead tr {
+    background: var(--bg-base);
+  }
+
+  .module-table th {
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .module-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #f0f0f0;
+    color: var(--text-secondary);
+    vertical-align: top;
+  }
+
+  .module-table tr:last-child td { border-bottom: none; }
+  .module-table tr:hover td { background: #fafafa; }
+
+  .module-name { color: var(--text-primary); font-weight: 600; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .badge-green { background: #e8f5e9; color: #2e7d32; }
+  .badge-blue { background: #e3f2fd; color: #1565c0; }
+  .badge-orange { background: rgba(230,81,0,0.1); color: var(--brand-primary); }
+
+  /* ── HEURISTIC GRID ── */
+  .heuristic-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .heuristic-item {
+    background: var(--bg-white);
+    border-radius: 10px;
+    padding: 20px 22px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  }
+
+  .heuristic-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .heuristic-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.92rem;
+    margin-bottom: 8px;
+  }
+
+  .heuristic-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .score-bar {
+    height: 4px;
+    background: #f0f0f0;
+    border-radius: 2px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+
+  .score-fill {
+    height: 100%;
+    background: var(--brand-gradient);
+    border-radius: 2px;
+  }
+
+  /* ── PERSONA CARD ── */
+  .persona-card {
+    background: var(--bg-white);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+
+  .persona-header {
+    background: var(--brand-gradient);
+    padding: 24px 28px;
+    display: flex; align-items: center; gap: 16px;
+  }
+
+  .persona-avatar {
+    width: 52px; height: 52px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .persona-header h4 { color: #fff; font-size: 1.05rem; font-weight: 600; }
+  .persona-header span { color: rgba(255,255,255,0.7); font-size: 0.8rem; }
+
+  .persona-body {
+    padding: 24px 28px;
+  }
+
+  .persona-body p {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+
+  .persona-goals {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  .persona-goal {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+  }
+
+  .goal-check {
+    width: 18px; height: 18px;
+    background: rgba(46,125,50,0.1);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem;
+    color: #2e7d32;
+    flex-shrink: 0;
+  }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow-diagram {
+    display: flex; align-items: center;
+    gap: 0;
+    padding: 28px 0;
+    overflow-x: auto;
+  }
+
+  .flow-step {
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .flow-box {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 110px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  }
+
+  .flow-box.active {
+    background: var(--brand-gradient);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 16px rgba(230,81,0,0.25);
+  }
+
+  .flow-sub {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-weight: 400;
+  }
+
+  .flow-arrow {
+    color: var(--border);
+    font-size: 1.2rem;
+    padding: 0 6px;
+    flex-shrink: 0;
+  }
+
+  /* ── PAGE BREAK ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 60px 0;
+  }
+
+  /* ── CONCLUSION ── */
+  .conclusion-card {
+    background: var(--brand-gradient);
+    border-radius: 16px;
+    padding: 48px 52px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .conclusion-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+
+  .conclusion-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .conclusion-card p {
+    color: rgba(255,255,255,0.8);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 680px;
+  }
+
+  .conclusion-pills {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 28px;
+  }
+
+  .conclusion-pill {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    font-weight: 500;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+
+  /* ── PRINT / RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .hero, .content { padding: 36px 28px; }
+    .stat-row { grid-template-columns: repeat(2, 1fr); }
+    .card-grid-2, .heuristic-grid { grid-template-columns: 1fr; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section { animation: fadeUp 0.4s ease both; }
+  .section:nth-child(1) { animation-delay: 0.05s; }
+  .section:nth-child(2) { animation-delay: 0.1s; }
+  .section:nth-child(3) { animation-delay: 0.15s; }
+  .section:nth-child(4) { animation-delay: 0.2s; }
+  .section:nth-child(5) { animation-delay: 0.25s; }
+  .section:nth-child(6) { animation-delay: 0.3s; }
+  .section:nth-child(7) { animation-delay: 0.35s; }
+  .section:nth-child(8) { animation-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <h1>VanGuard AIOps</h1>
+    <p>UX Research Report</p>
+  </div>
+  <nav>
+    <div class="sidebar-label">Sections</div>
+    <a class="nav-item" href="#problem-statement"><span class="nav-dot"></span>Problem Statement</a>
+    <a class="nav-item active" href="#overview"><span class="nav-dot"></span>Overview</a>
+    <a class="nav-item" href="#research-approach"><span class="nav-dot"></span>Research Approach</a>
+    <a class="nav-item" href="#user-personas"><span class="nav-dot"></span>User Personas</a>
+    <a class="nav-item" href="#information-architecture"><span class="nav-dot"></span>Information Architecture</a>
+    <a class="nav-item" href="#heuristic-analysis"><span class="nav-dot"></span>Heuristic Analysis</a>
+    <a class="nav-item" href="#interaction-patterns"><span class="nav-dot"></span>Interaction Patterns</a>
+    <a class="nav-item" href="#module-analysis"><span class="nav-dot"></span>Module Analysis</a>
+    <a class="nav-item" href="#app-screens"><span class="nav-dot"></span>App Screens</a>
+    <a class="nav-item" href="#design-system"><span class="nav-dot"></span>Design System</a>
+    <a class="nav-item" href="#conclusion"><span class="nav-dot"></span>Conclusion</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="avatar">UX</div>
+    <div class="sidebar-footer-text">
+      <p>Design Portfolio</p>
+      <span>UX Research Report</span>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">
+      <span>◎</span> UX Research Report
+    </div>
+    <h2>VanGuard AIOps<br><em>Enterprise Platform</em></h2>
+    <p style="color:rgba(255,255,255,0.7); max-width:520px; font-size:1.05rem; line-height:1.7; margin-top:4px;">
+      A comprehensive UX research study of the VanGuard AIOps platform — exploring design decisions, interaction architecture, and the user experience of AI-augmented IT operations.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Product</span>
+        <span class="hero-meta-value">VanGuard AIOps</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Type</span>
+        <span class="hero-meta-value">Enterprise Web Application</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Domain</span>
+        <span class="hero-meta-value">IT Operations / FinTech</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Modules Analysed</span>
+        <span class="hero-meta-value">12 Modules</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- PROBLEM STATEMENT -->
+    <section class="section" id="problem-statement">
+      <div class="section-header">
+        <span class="section-number">00</span>
+        <h3>Problem Statement</h3>
+      </div>
+      <p class="section-intro">
+        Modern banking infrastructure generates an enormous volume of system alerts — often thousands per hour across payment gateways, mobile banking services, card processing pipelines, and core banking systems. Operations teams at financial institutions face a critical challenge: distinguishing real, high-impact incidents from noise, and routing the right information to the right team in time to prevent customer impact.
+      </p>
+
+      <div class="highlight-box" style="margin-bottom: 28px;">
+        <p><strong>The core problem:</strong> When systems fail in a bank, hundreds of correlated alerts fire simultaneously from multiple monitoring tools (Prometheus, Dynatrace, Nagios, AppDynamics, Datadog). Each alert is independent — with no context about root cause, no grouping, and no ownership. Operations engineers are flooded with noise at exactly the moment they need clarity. Teams receive duplicate notifications, waste time investigating redundant alerts, and risk missing the actual root-cause signal buried in the volume.</p>
+      </div>
+
+      <div class="card-grid" style="margin-bottom: 28px;">
+        <div class="feature-card">
+          <div class="feature-icon">🏦</div>
+          <h4>Banking-Specific Complexity</h4>
+          <p>Banking systems run services critical to millions of customers — UPI, card processing, net banking, and mobile apps — each with strict SLA requirements and regulatory obligations. Any degradation that goes unnoticed for even minutes can result in significant financial loss and reputational damage.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌊</div>
+          <h4>Alert Flood Problem</h4>
+          <p>A single infrastructure failure — such as a database connection pool exhaustion — can trigger 50–200 individual alerts across 5+ monitoring tools within minutes. Without intelligent grouping, L1 engineers are overwhelmed before they even understand what is wrong.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h4>Wrong Team, Wrong Time</h4>
+          <p>Without automated routing, alerts go to generic operations queues or are missed entirely. The team responsible for the payment gateway may not see a cascading failure originating in the database layer until customers are already affected.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 28px;">
+        <h4 style="font-weight:600; margin-bottom:16px; color:var(--text-primary);">How VanGuard AIOps Solves This</h4>
+        <div class="flow-diagram">
+          <div class="flow-step">
+            <div class="flow-box active" style="background:linear-gradient(135deg,#e65100,#b71c1c); color:#fff; border:none;">Raw Alerts</div>
+            <div class="flow-sub">100s per minute</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box">AI Grouping</div>
+            <div class="flow-sub">Correlation model</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box">Incident Created</div>
+            <div class="flow-sub">Single root-cause</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box">Team Notified</div>
+            <div class="flow-sub">Right team, instantly</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box">Resolved</div>
+            <div class="flow-sub">MTTR minimised</div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="findings-list">
+        <li><span class="finding-dot"></span><span class="finding-text"><strong>AI-powered alert correlation</strong> — The platform's AI model analyses incoming alerts in real time, grouping those sharing common root causes, affected services, or temporal patterns into a single actionable incident rather than a flood of individual notifications.</span></li>
+        <li><span class="finding-dot"></span><span class="finding-text"><strong>Dedicated team routing</strong> — Each service in the bank's infrastructure is owned by a specific team registered in the Command Center. When an incident is created, the AI automatically notifies the service owner — eliminating the ambiguity of who is responsible.</span></li>
+        <li><span class="finding-dot"></span><span class="finding-text"><strong>Noise suppression at scale</strong> — By correlating hundreds of individual alerts into a handful of meaningful incidents, the platform reduces alert volume by up to 95%, allowing engineers to focus on resolution rather than triage.</span></li>
+        <li><span class="finding-dot"></span><span class="finding-text"><strong>Context-rich incident creation</strong> — Each AI-created incident includes a summary, affected services, blast radius analysis, and a link to related topology nodes — giving the on-call engineer everything they need to begin remediation in seconds.</span></li>
+      </ul>
+    </section>
+
+    <!-- SECTION 1: OVERVIEW -->
+
+    <section class="section" id="overview">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <h3>Executive Overview</h3>
+      </div>
+      <p class="section-intro">
+        VanGuard AIOps is an enterprise-grade IT operations platform purpose-built for financial services infrastructure. The platform integrates real-time monitoring, AI-driven incident intelligence, predictive analytics, and team orchestration into a single, cohesive interface — enabling operations teams to reduce mean time to resolution (MTTR) and proactively prevent outages before they impact business services.
+      </p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-card-label">Modules Covered</div>
+          <div class="stat-card-value">12</div>
+          <div class="stat-card-sub">Fully Designed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">AI Integration Points</div>
+          <div class="stat-card-value">7+</div>
+          <div class="stat-card-sub">AI-augmented workflows</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Target Users</div>
+          <div class="stat-card-value">3</div>
+          <div class="stat-card-sub">Distinct personas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Design Approach</div>
+          <div class="stat-card-value">D-F</div>
+          <div class="stat-card-sub">Design-first methodology</div>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <p>The platform is designed with a <strong>design-first philosophy</strong> — every interaction pattern, data hierarchy, and workflow was conceptualised and validated at the design stage before any implementation began. This approach ensured that the final product is both technically sound and genuinely usable by under-pressure operations teams.</p>
+      </div>
+
+      <div class="card-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h4>AI-Augmented Operations</h4>
+          <p>V◯ID, the platform's embedded AI assistant, surfaces contextual intelligence across all modules — from incident root-cause summaries to predictive capacity warnings — reducing cognitive load on L1 and L2 engineers.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h4>FinTech-Grade Data Density</h4>
+          <p>Designed for financial services operations teams who need to monitor UPI, card processing, and net banking services simultaneously. Data density is high but legible, with clear visual hierarchy separating critical from informational content.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔗</div>
+          <h4>Deep Cross-Module Linking</h4>
+          <p>Context-aware navigation lets engineers jump from a topology node directly to an incident, or from a prediction to a linked active incident — dramatically shortening investigation paths.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: RESEARCH APPROACH -->
+    <section class="section" id="research-approach">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <h3>Research Approach</h3>
+      </div>
+      <p class="section-intro">
+        This UX research study evaluates the VanGuard AIOps platform through multiple lenses: heuristic analysis, task-flow evaluation, information architecture review, and design system audit. Research focused on how well the application serves the cognitive and operational needs of its primary users — SREs, operations engineers, and platform managers in financial services.
+      </p>
+
+      <div class="card-grid-2">
+        <div class="card">
+          <h4 style="font-weight:600; margin-bottom:12px; color:var(--text-primary);">Methods Applied</h4>
+          <ul class="findings-list">
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Heuristic Evaluation</strong> — Nielsen's 10 principles applied across all 12 modules</span></li>
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Task Flow Analysis</strong> — End-to-end incident response workflow mapped and evaluated</span></li>
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Information Architecture Audit</strong> — Navigation structure, labelling, and grouping assessed</span></li>
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Design System Review</strong> — Visual consistency, colour usage, and component patterns analysed</span></li>
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Contextual Scenario Mapping</strong> — Real-world incident and prediction scenarios traced through the UI</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4 style="font-weight:600; margin-bottom:12px; color:var(--text-primary);">Design Principles Validated</h4>
+          <ul class="findings-list">
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Progressive Disclosure</strong> — Complex data surfaces only when needed</span></li>
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Status Visibility</strong> — System health is always a glance away from any screen</span></li>
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Error Prevention by Design</strong> — Approvals and confirmations built into automation workflows</span></li>
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Flexibility & Efficiency</strong> — Collapsible sidebar, searchable views, and filterable tables throughout</span></li>
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Aesthetic Integrity</strong> — Consistent brand language from sidebar to modal to AI chat</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: USER PERSONAS -->
+    <section class="section" id="user-personas">
+      <div class="section-header">
+        <span class="section-number">03</span>
+        <h3>User Personas</h3>
+      </div>
+      <p class="section-intro">
+        VanGuard AIOps is designed for three distinct user groups, each with different cognitive demands, time pressures, and information needs. The interface successfully addresses all three through role-appropriate data density and workflow depth.
+      </p>
+
+      <div class="card-grid">
+        <div class="persona-card">
+          <div class="persona-header">
+            <div class="persona-avatar">RK</div>
+            <div>
+              <h4>L1/L2 Operations Engineer</h4>
+              <span>Primary User · High-frequency</span>
+            </div>
+          </div>
+          <div class="persona-body">
+            <p>Front-line responders handling active alerts and incident triage. Need fast, scannable information with clear action paths. Time-to-action is critical — often working under SLA pressure.</p>
+            <div class="persona-goals">
+              <div class="persona-goal"><div class="goal-check">✓</div>Triage alerts by severity in seconds</div>
+              <div class="persona-goal"><div class="goal-check">✓</div>Access runbooks directly from incident view</div>
+              <div class="persona-goal"><div class="goal-check">✓</div>Understand blast radius without context-switching</div>
+              <div class="persona-goal"><div class="goal-check">✓</div>Use AI assistant for rapid incident summaries</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="persona-card">
+          <div class="persona-header">
+            <div class="persona-avatar">SR</div>
+            <div>
+              <h4>Senior SRE / Platform Lead</h4>
+              <span>Power User · Strategic Depth</span>
+            </div>
+          </div>
+          <div class="persona-body">
+            <p>Responsible for system health trends, capacity planning, and cross-team coordination. Needs both deep diagnostic capability and high-level visibility across all services simultaneously.</p>
+            <div class="persona-goals">
+              <div class="persona-goal"><div class="goal-check">✓</div>Analyse predictive signals before incidents occur</div>
+              <div class="persona-goal"><div class="goal-check">✓</div>Configure and execute automated runbooks</div>
+              <div class="persona-goal"><div class="goal-check">✓</div>Review topology for cascading failure risks</div>
+              <div class="persona-goal"><div class="goal-check">✓</div>Generate SLA and business impact reports</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="persona-card">
+          <div class="persona-header">
+            <div class="persona-avatar">VP</div>
+            <div>
+              <h4>Operations Director / VP Engineering</h4>
+              <span>Executive User · Low-frequency, High Stakes</span>
+            </div>
+          </div>
+          <div class="persona-body">
+            <p>Needs business-language summaries of operational health. Focused on financial impact, SLA compliance, and team performance rather than technical diagnostics.</p>
+            <div class="persona-goals">
+              <div class="goal-check" style="background:rgba(21,101,192,0.1); color:#1565c0;">✓</div>
+              <div class="persona-goal" style="gap:10px;"><div></div>View business impact in rupee terms</div>
+              <div class="persona-goal"><div class="goal-check">✓</div>Access executive-level reports at a glance</div>
+              <div class="persona-goal"><div class="goal-check">✓</div>Understand team capacity and service ownership</div>
+              <div class="persona-goal"><div class="goal-check">✓</div>Track automation rate trends over time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: INFORMATION ARCHITECTURE -->
+    <section class="section" id="information-architecture">
+      <div class="section-header">
+        <span class="section-number">04</span>
+        <h3>Information Architecture</h3>
+      </div>
+      <p class="section-intro">
+        The platform's navigation structure demonstrates a thoughtful IA that groups modules by the mental model of operations engineers — moving from real-time awareness (Dashboard, Incidents, Alerts) through diagnosis tools (Topology, Predictive Analysis) to operations management (Runbooks, Command Center) and administration (Integrations, Service Catalogue).
+      </p>
+
+      <div class="pullquote">
+        "The navigation hierarchy mirrors how an operations engineer actually thinks — from 'what's on fire right now?' to 'why is this happening?' to 'how do we fix it?'"
+      </div>
+
+      <div class="card" style="margin-bottom: 24px;">
+        <h4 style="font-weight:600; color:var(--brand-primary); margin-bottom:16px; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em;">Navigation Flow — Incident Response Path</h4>
+        <div class="flow-diagram">
+          <div class="flow-step">
+            <div class="flow-box active">Dashboard</div>
+            <div class="flow-sub">Awareness</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box">Incidents</div>
+            <div class="flow-sub">Triage</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box">Topology</div>
+            <div class="flow-sub">Diagnose</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box">Runbooks</div>
+            <div class="flow-sub">Remediate</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box">Reports</div>
+            <div class="flow-sub">Post-Mortem</div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="findings-list">
+        <li><span class="finding-dot"></span><span class="finding-text"><strong>12-item navigation is well-organised</strong> — grouped by operational phase rather than technical category, reducing orientation time for new users significantly.</span></li>
+        <li><span class="finding-dot"></span><span class="finding-text"><strong>Collapsible sidebar</strong> preserves screen real estate on data-heavy screens — a critical affordance for engineers monitoring multiple simultaneous incidents on a single display.</span></li>
+        <li><span class="finding-dot"></span><span class="finding-text"><strong>Consistent active state treatment</strong> — the white pill on the active nav item with a chevron right indicator provides unambiguous location feedback throughout the application.</span></li>
+        <li><span class="finding-dot"></span><span class="finding-text"><strong>Deep cross-linking architecture</strong> — Topology nodes link to incidents, predictions link to incidents, alerts link to incidents. This web of connections reflects real-world investigation workflows and dramatically reduces task completion time.</span></li>
+        <li><span class="finding-dot"></span><span class="finding-text"><strong>User identity anchoring</strong> — the persistent user avatar and role display at the bottom of the sidebar grounds the experience and is particularly valuable in shared-workstation environments common in operations centres.</span></li>
+      </ul>
+    </section>
+
+    <!-- SECTION 5: HEURISTIC ANALYSIS -->
+    <section class="section" id="heuristic-analysis">
+      <div class="section-header">
+        <span class="section-number">05</span>
+        <h3>Heuristic Analysis</h3>
+      </div>
+      <p class="section-intro">
+        Applied Nielsen's 10 Usability Heuristics across all 12 modules. The platform demonstrates consistently strong scores across principles most critical for high-stakes operational interfaces.
+      </p>
+
+      <div class="heuristic-grid">
+        <div class="heuristic-item">
+          <div class="heuristic-label">Heuristic 1</div>
+          <div class="heuristic-title">Visibility of System Status</div>
+          <div class="heuristic-desc">Excellent. The Dashboard provides at-a-glance system health, transaction volumes, and active incidents. Every service has a real-time status badge. The sidebar header persists context regardless of current module.</div>
+          <div class="score-bar"><div class="score-fill" style="width:96%"></div></div>
+        </div>
+
+        <div class="heuristic-item">
+          <div class="heuristic-label">Heuristic 2</div>
+          <div class="heuristic-title">Match Between System & Real World</div>
+          <div class="heuristic-desc">Strong. Terminology aligns with ITSM and SRE vocabulary (P1/P2, MTTR, SLA, Root Cause). Business Impact is expressed in rupee values — the language of stakeholders, not just engineers.</div>
+          <div class="score-bar"><div class="score-fill" style="width:92%"></div></div>
+        </div>
+
+        <div class="heuristic-item">
+          <div class="heuristic-label">Heuristic 3</div>
+          <div class="heuristic-title">User Control & Freedom</div>
+          <div class="heuristic-desc">Well implemented. The incident detail modal is closeable without losing list context. The sidebar is togglable. The AI assistant can be minimised without closing. Draft runbook states persist.</div>
+          <div class="score-bar"><div class="score-fill" style="width:90%"></div></div>
+        </div>
+
+        <div class="heuristic-item">
+          <div class="heuristic-label">Heuristic 4</div>
+          <div class="heuristic-title">Consistency & Standards</div>
+          <div class="heuristic-desc">Excellent. The orange/red brand colour is used consistently as the action and heading accent. Status badge colour coding (green/yellow/red) is uniform across all modules. Card layout patterns are repeated predictably.</div>
+          <div class="score-bar"><div class="score-fill" style="width:97%"></div></div>
+        </div>
+
+        <div class="heuristic-item">
+          <div class="heuristic-label">Heuristic 5</div>
+          <div class="heuristic-title">Error Prevention</div>
+          <div class="heuristic-desc">Thoughtfully designed. Runbook automation includes approval workflow steps. Destructive actions in Mission Control require confirmation. Toast notifications provide immediate feedback on all state-changing actions.</div>
+          <div class="score-bar"><div class="score-fill" style="width:88%"></div></div>
+        </div>
+
+        <div class="heuristic-item">
+          <div class="heuristic-label">Heuristic 6</div>
+          <div class="heuristic-title">Recognition Over Recall</div>
+          <div class="heuristic-desc">Strong. Lucide icons are universally paired with text labels — engineers never need to memorise icon meanings. Prediction cards show both current and predicted values side by side, removing mental arithmetic.</div>
+          <div class="score-bar"><div class="score-fill" style="width:91%"></div></div>
+        </div>
+
+        <div class="heuristic-item">
+          <div class="heuristic-label">Heuristic 7</div>
+          <div class="heuristic-title">Flexibility & Efficiency</div>
+          <div class="heuristic-desc">Excellent. The V◯ID AI assistant provides power-user shortcuts to any module's data via natural language. Search, filter, and category tabs are available across all list-heavy screens.</div>
+          <div class="score-bar"><div class="score-fill" style="width:94%"></div></div>
+        </div>
+
+        <div class="heuristic-item">
+          <div class="heuristic-label">Heuristic 8</div>
+          <div class="heuristic-title">Aesthetic & Minimalist Design</div>
+          <div class="heuristic-desc">Carefully balanced. High information density is necessary for the domain; the design avoids clutter through consistent spacing, muted secondary text, and progressive disclosure of detail via modals and side panels.</div>
+          <div class="score-bar"><div class="score-fill" style="width:89%"></div></div>
+        </div>
+
+        <div class="heuristic-item">
+          <div class="heuristic-label">Heuristic 9</div>
+          <div class="heuristic-title">Help Users Recognise & Recover from Errors</div>
+          <div class="heuristic-desc">Solid. Sonner toast notifications are used consistently for action feedback. Runbook execution history surfaces failed runs with timestamps, enabling post-incident diagnosis.</div>
+          <div class="score-bar"><div class="score-fill" style="width:86%"></div></div>
+        </div>
+
+        <div class="heuristic-item">
+          <div class="heuristic-label">Heuristic 10</div>
+          <div class="heuristic-title">Help & Documentation</div>
+          <div class="heuristic-desc">Exceptionally well handled via AI. The V◯ID assistant serves as a contextual help layer — surfacing relevant information about incidents, predictions, and topology without requiring engineers to leave their workflow.</div>
+          <div class="score-bar"><div class="score-fill" style="width:93%"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: INTERACTION PATTERNS -->
+    <section class="section" id="interaction-patterns">
+      <div class="section-header">
+        <span class="section-number">06</span>
+        <h3>Interaction Design Patterns</h3>
+      </div>
+      <p class="section-intro">
+        VanGuard AIOps employs several well-chosen interaction patterns that align with the mental models and workflows of operations engineering teams. Each pattern has been selected to reduce time-to-insight and support high-stress, time-critical usage contexts.
+      </p>
+
+      <div class="card-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🪟</div>
+          <h4>Modal-First Incident Detail</h4>
+          <p>Incident details open as a modal overlay rather than navigating to a new page. This preserves list context and allows engineers to review multiple incidents rapidly without losing their place — a pattern especially valuable during active incident storms.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h4>Persistent Floating AI Assistant</h4>
+          <p>The V◯ID assistant floats as a minimisable widget that persists across all modules. Engineers can query the AI without leaving any current view — reducing context-switching during critical workflows. The minimise state preserves conversation context.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🗺️</div>
+          <h4>Interactive Topology with Incident Highlighting</h4>
+          <p>When an incident is opened, the Topology view can be triggered from within the incident modal with affected nodes pre-highlighted. This bidirectional navigation between incident data and infrastructure visualisation is a powerful diagnostic affordance.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <h4>Explainable AI Predictions</h4>
+          <p>Predictive Analysis surfaces not just predictions but the model's reasoning — weighted factor lists, data points, model type (LSTM + Gradient Boosting), and historical pattern matches. This builds trust and enables engineers to validate AI judgements independently.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h4>Live Runbook Execution with Step Tracking</h4>
+          <p>Runbooks render as step-by-step execution flows with real-time status per step — pending, running, completed, or failed. This transforms what would be a static document into a dynamic execution environment with approval gates and audit trails.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💎</div>
+          <h4>Animated Integration Flow Visualisation</h4>
+          <p>The Integrations module renders live SVG arrows connecting source systems to the VanGuard core. These animated connection lines communicate data flow direction and health status at a glance — a rare and thoughtful visual design choice in enterprise tooling.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: MODULE ANALYSIS -->
+    <section class="section" id="module-analysis">
+      <div class="section-header">
+        <span class="section-number">07</span>
+        <h3>Module-by-Module Analysis</h3>
+      </div>
+      <p class="section-intro">
+        Each of the 12 modules was evaluated for its design quality, task completion support, and contribution to the overall platform coherence.
+      </p>
+
+      <table class="module-table">
+        <thead>
+          <tr>
+            <th>Module</th>
+            <th>Primary Use Case</th>
+            <th>Key Design Strength</th>
+            <th>User Tier</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="module-name">Dashboard</span></td>
+            <td>Real-time operational overview</td>
+            <td>KPI stat cards with trend indicators; transaction volume chart; at-a-glance service table — all in one scannable view</td>
+            <td><span class="badge badge-orange">All users</span></td>
+          </tr>
+          <tr>
+            <td><span class="module-name">Incident Management</span></td>
+            <td>Active incident triage and tracking</td>
+            <td>P1/P2 prioritisation, modal deep-dive, cross-links to topology — supports entire incident lifecycle in one module</td>
+            <td><span class="badge badge-orange">L1/L2 Engineers</span></td>
+          </tr>
+          <tr>
+            <td><span class="module-name">Topology</span></td>
+            <td>Infrastructure visualisation and root cause mapping</td>
+            <td>Layered infrastructure diagram with incident highlighting, node health status, and integrated chat for topology queries</td>
+            <td><span class="badge badge-blue">SRE / Platform</span></td>
+          </tr>
+          <tr>
+            <td><span class="module-name">Alert Management</span></td>
+            <td>Alert grouping and noise reduction</td>
+            <td>AI-driven alert grouping reduces noise from thousands of raw alerts to actionable groups with suggested incident creation</td>
+            <td><span class="badge badge-orange">L1/L2 Engineers</span></td>
+          </tr>
+          <tr>
+            <td><span class="module-name">Predictive Analysis</span></td>
+            <td>Proactive issue prevention</td>
+            <td>Explainable AI with factor weights, capacity visualisation, and confidence scoring — makes AI predictions transparent and actionable</td>
+            <td><span class="badge badge-blue">SRE / Platform</span></td>
+          </tr>
+          <tr>
+            <td><span class="module-name">Change Intelligence</span></td>
+            <td>Change-to-incident correlation</td>
+            <td>Correlates recent deployments and config changes with active incidents, helping identify change-induced degradation rapidly</td>
+            <td><span class="badge badge-blue">SRE / DevOps</span></td>
+          </tr>
+          <tr>
+            <td><span class="module-name">Business Impact</span></td>
+            <td>Financial and user impact quantification</td>
+            <td>Expresses operational events in rupee impact and affected user counts — bridging the gap between engineering and business stakeholders</td>
+            <td><span class="badge badge-green">Management</span></td>
+          </tr>
+          <tr>
+            <td><span class="module-name">Runbooks</span></td>
+            <td>Automated and manual remediation workflows</td>
+            <td>Drag-and-drop step builder, approval gate integration, execution history with success rates, and animated step-by-step runtime view</td>
+            <td><span class="badge badge-blue">SRE / Platform</span></td>
+          </tr>
+          <tr>
+            <td><span class="module-name">Command Center</span></td>
+            <td>Team management and service ownership</td>
+            <td>Nested group hierarchy (team → sub-group → user), service POC assignment with escalation paths, and real-time availability status</td>
+            <td><span class="badge badge-green">Management</span></td>
+          </tr>
+          <tr>
+            <td><span class="module-name">Reports</span></td>
+            <td>Executive and operational reporting</td>
+            <td>8 report types covering incident, SLA, business impact, MLOps, and executive needs — with configurable time ranges and export options</td>
+            <td><span class="badge badge-green">All tiers</span></td>
+          </tr>
+          <tr>
+            <td><span class="module-name">Integrations</span></td>
+            <td>Third-party tool connectivity</td>
+            <td>Visual flow diagram with animated SVG arrows showing data flow; categorised integration library; masked credential management with copy controls</td>
+            <td><span class="badge badge-blue">Platform / Admin</span></td>
+          </tr>
+          <tr>
+            <td><span class="module-name">Service Catalogue</span></td>
+            <td>Service inventory and documentation</td>
+            <td>Rich service cards with ownership, SLA details, dependency mapping, and direct links to related incidents and changes</td>
+            <td><span class="badge badge-green">All tiers</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SECTION: APP SCREENS -->
+    <section class="section" id="app-screens">
+      <div class="section-header">
+        <span class="section-number">07b</span>
+        <h3>Application Screens — User Flow Walkthrough</h3>
+      </div>
+      <p class="section-intro">
+        VanGuard AIOps is organised into 12 purpose-built screens, each serving a distinct stage in the operations workflow — from real-time awareness through diagnosis, remediation, and post-incident governance. The following is a screen-by-screen breakdown of what each interface does and how users move through it.
+      </p>
+
+
+      <!-- Screen 01: Dashboard -->
+      <div class="feature-card" style="margin-bottom: 28px;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px;">
+          <div style="min-width:44px; height:44px; border-radius:10px; background:var(--brand-gradient); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:600;">01</div>
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Operations Dashboard</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em;">Entry point · Real-time awareness</span>
+          </div>
+        </div>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          The Dashboard is the first screen engineers land on after login — the command centre of the entire platform. At the top sits a four-stat summary row showing overall system health percentage, active incident count, alerts per hour, and the automation rate. Each stat carries a directional trend indicator (up/down arrow with a delta value) so engineers immediately know whether conditions are improving or worsening without reading any detail.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Below the stats, the screen splits into two panels side by side. The left panel lists <strong>Critical Incidents</strong> — the highest-severity active incidents, each showing its ID (e.g. CI-4589), priority badge (P1/P2), affected service, and how long ago it was detected. Clicking any row opens the full Incident Detail modal without navigating away. The right panel renders a <strong>live transaction volume chart</strong> — a time-series line graph plotted across the current day — giving the engineering team an at-a-glance view of traffic shape and any unusual spikes correlating with incidents.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Beneath both panels is a <strong>Service Health table</strong> covering all banking services (UPI Gateway, Mobile Banking API, Card Processing, Net Banking Portal, QR Payments, Merchant API). Each row shows the service name, colour-coded status badge (Operational / Degraded / Warning), response time in milliseconds, request success rate, requests per minute, and when the last incident occurred. The table rows are clickable and link directly to the Service Catalogue detail for that service. A separate <strong>System Health panel</strong> breaks infrastructure down by component — Application Servers, Database Cluster, API Gateway, Message Queue, Cache Layer — showing instance counts (e.g. 45/46 healthy) and a percentage score.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75;">
+          A <strong>Maintenance Windows panel</strong> at the bottom surfaces upcoming scheduled maintenance with date, duration, and affected services — ensuring on-call engineers are never caught off guard by planned downtime. The V◯ID AI assistant button floats persistently in the corner, accessible from every screen in the application.
+        </p>
+      </div>
+
+      <!-- Screen 02: Incident Management -->
+      <div class="feature-card" style="margin-bottom: 28px;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px;">
+          <div style="min-width:44px; height:44px; border-radius:10px; background:var(--brand-gradient); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:600;">02</div>
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Incident Management</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em;">Triage · Assignment · Status tracking</span>
+          </div>
+        </div>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          The Incidents screen is the primary workspace for L1 and L2 engineers during an active incident. A search bar and filter toolbar sit at the top, allowing engineers to slice the incident list by priority (P1–P4), status (Active / Investigating / Mitigating / Resolved), assigned engineer, source monitoring tool, or time window. The list itself renders each incident as a card row showing incident ID, title, affected service, priority badge, current status, assignee name, detection timestamp, and a count of how many child alerts were correlated into it — for example, "15 alerts merged" tells the engineer at a glance how broad the signal was.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Clicking an incident row opens a full-detail <strong>Incident Detail Modal</strong> that slides over the list without losing context. Inside this modal, engineers see the AI-generated root cause summary from V◯ID, a chronological alert timeline showing which alerts fired in what order from which monitoring tools, the blast radius (which downstream services are affected), links to related topology nodes, a suggested runbook, and the business impact expressed in rupee terms with affected user count. The assignee can be changed inline, status can be updated with a dropdown, and the incident can be escalated directly from this modal.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75;">
+          Resolved incidents remain visible in the list with a greyed status badge and are searchable for post-mortem reference. The V◯ID assistant, when opened from this screen, automatically scopes its context to the currently viewed incident — so engineers can ask questions like "what caused this?" or "has this happened before?" and receive data-grounded answers.
+        </p>
+      </div>
+
+      <!-- Screen 03: Alert Management -->
+      <div class="feature-card" style="margin-bottom: 28px;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px;">
+          <div style="min-width:44px; height:44px; border-radius:10px; background:var(--brand-gradient); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:600;">03</div>
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Alert Management</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em;">Core banking feature · AI correlation · Noise reduction</span>
+          </div>
+        </div>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          This is the heart of VanGuard AIOps for banking environments. The screen has three view modes toggled via a tab strip: <strong>Active Alerts</strong> (raw, ungrouped), <strong>All Alerts</strong> (full history with status filters), and <strong>Correlated View</strong> (the AI-grouped default). Engineers land on the Correlated View by default because it is the most actionable.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          In the Correlated View, the AI model has already processed every incoming alert and grouped those sharing a common root cause, affected service, or temporal cluster into a single <strong>Correlation Group</strong> — identified by codes like CORR-001, CORR-002. Each group is rendered as a collapsible card showing the group ID, a descriptive title derived from the dominant alert signal, a severity badge, a count of merged alerts (e.g. "5 alerts merged"), and the incident it was used to create (e.g. "→ CI-4589"). Expanding a group reveals the individual alerts inside it, each showing its alert ID, timestamp, source tool (Dynatrace, Nagios, Prometheus, AppDynamics, Datadog), severity, and the exact error message — with a faint connecting line indicating they all belong to the same root cause.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          At the top of the screen, an AI status banner shows a real-time summary: for example, "38 raw alerts from 5 monitoring tools → 6 correlated incidents · Noise reduction: 84%". Engineers can filter the correlated view by source tool, severity, timeline (last 5 mins / 30 mins / 1 hour / custom date range with a calendar picker), and status (Active / Closed). A search bar allows querying by alert ID or message keyword.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          The screen also supports <strong>alert re-correlation</strong>: engineers can select individual alerts from one group and move them to a different incident if the AI grouping does not match their domain knowledge — via a Switch modal that shows a dropdown of available incidents and a confirmation step. This keeps the AI-driven system under human control without slowing down the default workflow.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75;">
+          Once an incident is created from a correlation group, the dedicated service-owning team is notified automatically through their configured channel (PagerDuty, Slack, or Email), with the incident summary, severity, and a direct link to the incident detail — eliminating the ambiguity of who needs to act and what they are walking into.
+        </p>
+      </div>
+
+      <!-- Screen 04: Topology -->
+      <div class="feature-card" style="margin-bottom: 28px;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px;">
+          <div style="min-width:44px; height:44px; border-radius:10px; background:var(--brand-gradient); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:600;">04</div>
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Topology</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em;">Service dependency map · Blast radius · Root cause</span>
+          </div>
+        </div>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Topology renders a <strong>live, interactive service dependency graph</strong> — a canvas-based network map where each node represents a service, database, API gateway, load balancer, or infrastructure component, and edges represent the data flow and dependency relationships between them. Nodes are colour-coded by health status: green for healthy, amber for warning, red for critical. A node marked as the root cause of an active incident receives a pulsing highlight and a distinct visual treatment so engineers can immediately identify the origin point of a cascading failure.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          The map is organised into horizontal layers — from external user-facing services at the top, through API gateways and application servers, down to databases and infrastructure at the bottom — mirroring how traffic flows in a banking system. Engineers can zoom in and out and pan across the canvas. Clicking a node opens a <strong>side detail panel</strong> showing that component's name, type, current health status, CPU/memory/disk metrics if applicable, server ID, availability zone, and any active incidents or recent changes linked to it. Incidents listed in the node panel are clickable and open the full Incident Detail modal without leaving Topology.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          A <strong>Focus Mode</strong> lets engineers centre the graph on a specific node and see only its immediate upstream and downstream dependencies — essential during a P1 incident to understand blast radius without the visual noise of the full graph. A layer toggle switches between showing all infrastructure layers or only application-layer services.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75;">
+          The screen also features <strong>Compass</strong>, a topology-specific AI assistant, accessible via a chat panel that slides in from the right. Engineers can ask questions like "what depends on DB-Prod-East?" or "show me the impact path from the payment gateway to the core banking API" and Compass responds with natural language answers derived from the live graph data.
+        </p>
+      </div>
+
+      <!-- Screen 05: Predictive Analysis -->
+      <div class="feature-card" style="margin-bottom: 28px;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px;">
+          <div style="min-width:44px; height:44px; border-radius:10px; background:var(--brand-gradient); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:600;">05</div>
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Predictive Analysis</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em;">Proactive prevention · Confidence scoring · Explainable AI</span>
+          </div>
+        </div>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Predictive Analysis shifts the platform from reactive to proactive. The screen opens with a four-stat summary: predicted issues in flight, model prediction accuracy (94.2%), total issues prevented this period, and average confidence score across active predictions. Below this, a list of active <strong>Prediction Cards</strong> each show a unique prediction ID (e.g. PRED-1024), the issue being forecast (e.g. "Database Connection Pool Saturation"), the affected service, a confidence percentage, the current metric value versus the predicted breach value, the threshold that will be breached, and an ETA to breach.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Clicking a prediction card opens its <strong>Explainable AI detail panel</strong>. This is where the platform's transparency is most evident: the panel shows a natural-language AI summary of why the breach is expected, a weighted list of contributing factors (for example, "DB load: 74% weight — primary driver; batch job scheduled in 45 minutes: 18% weight"), a set of labelled data points, which model was used, and what historical pattern supports this prediction. A <strong>capacity visualisation</strong> renders a current-versus-predicted bar or gauge for the relevant metric (memory, CPU, disk, connection count), with the threshold line clearly marked. If an active incident is already linked to this prediction, a direct cross-link to that incident appears in the panel.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75;">
+          Each prediction also includes a recommended action — such as "Increase connection pool size to 300 or implement connection recycling" — along with the list of data sources that informed the model (Dynatrace APM, Prometheus Metrics, 30-day historical data). SREs can act on the recommendation, dismiss the prediction with a reason, or escalate it to a runbook for automated pre-emptive remediation.
+        </p>
+      </div>
+
+      <!-- Screen 06: Change Intelligence -->
+      <div class="feature-card" style="margin-bottom: 28px;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px;">
+          <div style="min-width:44px; height:44px; border-radius:10px; background:var(--brand-gradient); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:600;">06</div>
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Change Intelligence</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em;">Deployment correlation · Change-to-incident linking</span>
+          </div>
+        </div>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Change Intelligence answers one of the most time-consuming questions in incident response: "was this caused by a recent deployment or configuration change?" The screen ingests change records from CI/CD pipelines, config management systems, and ServiceNow, and automatically correlates them with active and recent incidents based on timing, affected service overlap, and change scope.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Each change record displayed shows the change ID, description, the engineer who deployed it, the timestamp, the affected services, and — crucially — whether any incidents occurred within a configurable time window after it. When a correlation is detected, the change card is visually flagged with a "Linked Incident" badge and a direct link to the incident, so engineers can immediately assess whether rollback is the right remediation path. The strength of the correlation (high / medium / low) is surfaced alongside a brief AI-generated rationale.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75;">
+          Engineers can also manually link a change to an incident if the automatic correlation missed it, and this feedback is used to improve the model over time. For banking environments where change advisory boards (CABs) and deployment freezes are common, this screen provides the audit trail needed to demonstrate whether an incident was change-induced.
+        </p>
+      </div>
+
+      <!-- Screen 07: Business Impact -->
+      <div class="feature-card" style="margin-bottom: 28px;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px;">
+          <div style="min-width:44px; height:44px; border-radius:10px; background:var(--brand-gradient); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:600;">07</div>
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Business Impact</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em;">Rupee loss · Affected users · Stakeholder language</span>
+          </div>
+        </div>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Business Impact translates operational events into the language of business stakeholders. Rather than showing CPU percentages or error rates, this screen quantifies the financial and customer consequence of active and historical incidents. For each incident, it displays an estimated financial loss in Indian rupees (calculated based on transaction volumes, failure rates, and service revenue contribution), the count of affected users, and SLA breach risk with a countdown timer.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          The screen is designed specifically for use by Operations Directors, VP Engineering, and business stakeholders who need to understand severity without technical context. A summary bar at the top shows aggregate impact across all active incidents: total estimated loss this hour, total users impacted, and number of SLA breach risks. Below, individual incident impact cards can be expanded to show a breakdown by service — for example, a database incident might show separate impact rows for UPI payments, mobile banking, and card processing, each with their own transaction loss estimate.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75;">
+          Historical impact data is also browsable by date range, enabling management teams to prepare post-incident reports with financial justification for remediation investments or staffing decisions.
+        </p>
+      </div>
+
+      <!-- Screen 08: Runbooks -->
+      <div class="feature-card" style="margin-bottom: 28px;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px;">
+          <div style="min-width:44px; height:44px; border-radius:10px; background:var(--brand-gradient); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:600;">08</div>
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Runbooks</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em;">Automated remediation · Step builder · Execution history</span>
+          </div>
+        </div>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Runbooks is the remediation workflow engine. The screen lists all runbooks in the library — each showing its ID, name, description, trigger type (automated or manual), current status (draft / active / paused), and a one-line summary of what it does. Engineers can filter by automation type or search by name. Clicking a runbook opens its detail view.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          The runbook detail view has two modes: <strong>Edit</strong> and <strong>Execute</strong>. In edit mode, a drag-and-drop <strong>step builder</strong> lets platform engineers construct workflows from five step types — Action (execute a script or API call), Condition (branch based on a metric check), Approval (pause and require a named engineer to confirm before proceeding), Notification (send a message to a team channel), and Custom (freeform command). Steps can be reordered, and each step has a configuration panel for its specific parameters. This structure supports the approval gates required in regulated banking environments where automated changes must be human-approved.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          In execute mode, an animated step-by-step runtime view shows the runbook progressing through each step in real time — with a live status indicator (pending / running / completed / failed) per step. If a step fails, execution pauses and the engineer is shown the error output before deciding whether to retry or abort. An <strong>Execution History</strong> panel below the runbook lists every past run with timestamp, triggered-by, duration, outcome (success or failure), and a pass/fail breakdown per step — giving a clear audit trail and success rate for compliance purposes.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75;">
+          Runbooks can be triggered manually from this screen or directly from an Incident Detail modal, and automated runbooks can be configured to trigger on specific alert correlation groups, making the remediation loop entirely hands-free for known, recurring failure patterns.
+        </p>
+      </div>
+
+      <!-- Screen 09: Command Center (Mission Control) -->
+      <div class="feature-card" style="margin-bottom: 28px;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px;">
+          <div style="min-width:44px; height:44px; border-radius:10px; background:var(--brand-gradient); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:600;">09</div>
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Command Center</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em;">Team management · Service ownership · Escalation paths</span>
+          </div>
+        </div>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Command Center is the organisational backbone of the platform — where operations leads define who owns what, and what happens when things go wrong. It is organised into three tabs: <strong>Services</strong>, <strong>Teams</strong>, and <strong>Users</strong>.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          The <strong>Services tab</strong> lists every banking service registered in the platform. Clicking a service opens its ownership configuration: which team is the primary owner, which specific sub-group within that team handles it, which individual is the primary point of contact (POC), who is the backup POC, and a full escalation path with configurable time-to-escalate at each level (e.g. Level 1 → DB Platform Team, escalate after 15 minutes; Level 2 → Platform Lead, after 30 minutes; Level 3 → Engineering Director, after 60 minutes). SLA response and resolution time targets are also configured here per service, and these feed directly into the SLA breach countdown visible during active incidents.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          The <strong>Teams tab</strong> shows the full team hierarchy — top-level teams (e.g. Platform Engineering, Payment Operations) that contain sub-groups (e.g. DB Platform Team, API Gateway Team), each with their member roster. Teams can be created, edited, or deleted from this view, and sub-groups can be nested within teams. The <strong>Users tab</strong> lists all registered engineers with their role, email, phone, and real-time availability status (available / busy / offline) — this status drives the on-call routing logic when an incident is created.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75;">
+          All additions and changes in Command Center trigger Sonner toast notifications as immediate feedback, and destructive actions (deleting a team or removing a service ownership) require confirmation to prevent accidental misconfiguration.
+        </p>
+      </div>
+
+      <!-- Screen 10: Reports -->
+      <div class="feature-card" style="margin-bottom: 28px;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px;">
+          <div style="min-width:44px; height:44px; border-radius:10px; background:var(--brand-gradient); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:600;">10</div>
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Reports</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em;">Scheduled reporting · Export · Governance</span>
+          </div>
+        </div>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          The Reports screen covers operational and executive reporting across eight report types: Incident Summary, SLA Performance, Business Impact, Alert Correlation Summary, Predictive Analysis Accuracy, MLOps performance, Change Intelligence, and Executive Overview. Each type is pre-templated and can be generated on demand or scheduled for automatic delivery.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          The screen is split into three areas. The <strong>Generated Reports</strong> panel shows recently produced reports as cards — each displaying the report name, type, period covered, generation timestamp, format (PDF / Excel / CSV), file size, and who or what triggered it (a specific engineer or an automated schedule). Each card has a download button. The <strong>Scheduled Reports</strong> panel lists active report schedules with frequency (daily, weekly, monthly), next run time, recipient email addresses, and a toggle to pause or resume the schedule.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75;">
+          A <strong>Create Custom Report modal</strong> lets engineers configure a one-off or recurring report by selecting the type, date range (via a date picker), output format, delivery frequency, and recipient list. This is particularly useful for preparing regulatory audit documentation, board-level summaries, or post-incident reports for banking compliance requirements.
+        </p>
+      </div>
+
+      <!-- Screen 11: Integrations -->
+      <div class="feature-card" style="margin-bottom: 28px;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px;">
+          <div style="min-width:44px; height:44px; border-radius:10px; background:var(--brand-gradient); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:600;">11</div>
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Integrations</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em;">Tool connectivity · Data flow · Credential management</span>
+          </div>
+        </div>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Integrations is where all external tool connections are configured and managed. The screen opens with a <strong>visual data flow diagram</strong> — an animated SVG showing monitoring sources on the left (Dynatrace, Prometheus, Nagios, AppDynamics, Datadog, ServiceNow) connected via animated arrows to the VanGuard AIOps core in the centre, which in turn flows out to notification channels on the right (PagerDuty, Slack, Email, Jira). The arrows pulse when data is actively flowing, giving a live sense of platform connectivity.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Below the diagram, a categorised <strong>integration library</strong> lists all available connectors grouped by type (Monitoring, Alerting, ITSM, Communication). Each integration card shows the tool logo, connection status (Connected / Not Configured), and a settings button. Clicking settings opens the integration's configuration panel, showing the current credentials with masked API keys and passwords — each field has an eye toggle to reveal the value and a copy-to-clipboard button that uses toast feedback confirmation.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75;">
+          An <strong>Add Integration modal</strong> walks users through connecting a new tool: selecting the integration type, entering credentials, testing the connection with a live ping, and saving. Integrations that are actively sending data display an alert count and last-received timestamp, so administrators can quickly spot a source that has gone silent.
+        </p>
+      </div>
+
+      <!-- Screen 12: Service Catalogue -->
+      <div class="feature-card" style="margin-bottom: 0;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px;">
+          <div style="min-width:44px; height:44px; border-radius:10px; background:var(--brand-gradient); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:600;">12</div>
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Service Catalogue</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em;">Service inventory · Onboarding · Dependency documentation</span>
+          </div>
+        </div>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          The Service Catalogue is the platform's source of truth for all banking services under management. It presents a searchable, filterable grid of service cards — each showing the service name, category (Payment Services, Core Banking, Channel Services), tier (Critical / Standard), current operational status, owning team, version, and a real-time health score. Services can be filtered by category, status, or searched by name.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+          Clicking a service card opens its <strong>rich detail view</strong> with five tabs. The <strong>Overview tab</strong> shows the service description, SLA targets, compliance tags (RBI, PCI-DSS, GDPR), request volume, average latency, and a sparkline of recent health score trends. The <strong>Incidents tab</strong> lists all incidents linked to this service with direct links to the Incident Detail modal. The <strong>Dependencies tab</strong> maps upstream and downstream service dependencies, helping engineers understand what this service relies on and what relies on it. The <strong>Changes tab</strong> shows recent deployments and config changes correlated to this service. The <strong>Settings tab</strong> allows configuring SLA thresholds, auto-ticket creation, auto-remediation, and auto-escalation toggles.
+        </p>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.75;">
+          A multi-step <strong>Service Onboarding modal</strong> walks platform teams through registering a new service: entering the name, description, business unit, criticality level, SLA targets, compliance requirements, automation preferences, component details, integration points, security configuration (encryption standard, data masking, audit logging), and deployment preferences — with separate steps for each category and a progress indicator. This structured onboarding ensures every service in the catalogue is fully documented before it can receive alerts or be assigned team ownership.
+        </p>
+      </div>
+    </section>
+
+
+    <!-- SECTION 8: DESIGN SYSTEM -->
+    <section class="section" id="design-system">
+      <div class="section-header">
+        <span class="section-number">08</span>
+        <h3>Design System & Visual Language</h3>
+      </div>
+      <p class="section-intro">
+        VanGuard AIOps employs a disciplined design system that creates strong brand recognition while serving the practical needs of an operations platform. The visual language is confident, professional, and purpose-built for high-information-density environments.
+      </p>
+
+      <div class="card-grid-2" style="margin-bottom: 24px;">
+        <div class="card">
+          <h4 style="font-weight:600; margin-bottom:16px;">Colour System</h4>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#e65100,#b71c1c);flex-shrink:0;"></div>
+              <div>
+                <div style="font-weight:600; font-size:0.88rem; color:var(--text-primary);">Brand Gradient</div>
+                <div style="font-size:0.78rem; color:var(--text-muted); font-family:'DM Mono',monospace;">#e65100 → #b71c1c</div>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:36px;height:36px;border-radius:8px;background:#f5f5f5;border:1px solid #ddd;flex-shrink:0;"></div>
+              <div>
+                <div style="font-weight:600; font-size:0.88rem; color:var(--text-primary);">Background</div>
+                <div style="font-size:0.78rem; color:var(--text-muted); font-family:'DM Mono',monospace;">#f5f5f5 · #ffffff</div>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:36px;height:36px;border-radius:8px;background:#2e7d32;flex-shrink:0;"></div>
+              <div>
+                <div style="font-weight:600; font-size:0.88rem; color:var(--text-primary);">Status: Healthy</div>
+                <div style="font-size:0.78rem; color:var(--text-muted); font-family:'DM Mono',monospace;">#2e7d32 green series</div>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:36px;height:36px;border-radius:8px;background:#b71c1c;flex-shrink:0;"></div>
+              <div>
+                <div style="font-weight:600; font-size:0.88rem; color:var(--text-primary);">Status: Critical</div>
+                <div style="font-size:0.78rem; color:var(--text-muted); font-family:'DM Mono',monospace;">#b71c1c red series</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4 style="font-weight:600; margin-bottom:16px;">Component Patterns</h4>
+          <ul class="findings-list">
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Status Badges</strong> — Pill-shaped, colour-coded, used consistently across all modules</span></li>
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>White Cards on Grey BG</strong> — Consistent elevation language with 1px border + soft shadow</span></li>
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Hover States</strong> — Subtle border-color transitions to brand orange on interactive list items</span></li>
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Icon + Label Pairing</strong> — Every icon in the interface has a text label, removing ambiguity</span></li>
+            <li><span class="finding-dot"></span><span class="finding-text"><strong>Sonner Toast System</strong> — Consistent feedback for all mutations via top-right positioned toasts</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <p>The decision to anchor the brand palette to <strong>deep orange-to-red gradient</strong> is particularly well-considered for an operations platform. Warm tones communicate urgency and authority, while the neutral grey background ensures that green/yellow/red status indicators remain visually dominant and instantly scannable — exactly what operations engineers need.</p>
+      </div>
+
+      <ul class="findings-list">
+        <li><span class="finding-dot"></span><span class="finding-text"><strong>Typography hierarchy is clean and purposeful</strong> — H2/H3 headings in the brand orange create strong section anchors. Secondary text in #666666 recedes appropriately. Monospace IDs (CI-4589, PRED-1024) are immediately visually distinct from prose text.</span></li>
+        <li><span class="finding-dot"></span><span class="finding-text"><strong>Responsive grid system</strong> — The layout transitions from 4-column stats grid on desktop to 2-column on tablet and 1-column on mobile, with consistent gap spacing throughout.</span></li>
+        <li><span class="finding-dot"></span><span class="finding-text"><strong>Tailwind v4 foundation</strong> — The choice of Tailwind CSS v4 ensures a performant, utility-first style system that maintains visual consistency without a heavy component framework overhead.</span></li>
+        <li><span class="finding-dot"></span><span class="finding-text"><strong>Custom brand logos</strong> — VoidLogo, CompassLogo, and PhoenixLogo are purpose-designed SVG components that give the platform a distinct visual personality beyond standard icon libraries.</span></li>
+      </ul>
+    </section>
+
+    <!-- CONCLUSION -->
+    <section class="section" id="conclusion">
+      <div class="section-header">
+        <span class="section-number">09</span>
+        <h3>Summary & Design Impact</h3>
+      </div>
+      <p class="section-intro">
+        VanGuard AIOps represents a high-quality, thoughtfully-designed enterprise AIOps platform that addresses the genuine operational needs of financial services infrastructure teams. The design-first approach has produced an application that is both visually coherent and functionally sophisticated.
+      </p>
+
+      <div class="conclusion-card">
+        <h3>A Platform Built for High-Stakes Operations</h3>
+        <p>
+          VanGuard AIOps demonstrates that enterprise tooling can be both functionally powerful and visually excellent. The platform's design-first approach has resulted in an application where every interaction pattern, navigation structure, and visual detail serves the operational reality of SREs and engineers working under pressure. From the explainable AI predictions to the cross-module incident tracing to the V◯ID assistant that persists across every view — the design consistently prioritises the engineer's ability to move fast, understand clearly, and act decisively.
+        </p>
+        <div class="conclusion-pills">
+          <span class="conclusion-pill">AI Alert Correlation</span>
+          <span class="conclusion-pill">Banking-Grade Reliability</span>
+          <span class="conclusion-pill">AI-Augmented Intelligence</span>
+          <span class="conclusion-pill">Cross-Module Deep Linking</span>
+          <span class="conclusion-pill">Explainable Predictions</span>
+          <span class="conclusion-pill">Financial Impact Visibility</span>
+          <span class="conclusion-pill">Dedicated Team Routing</span>
+          <span class="conclusion-pill">Design-First Methodology</span>
+        </div>
+      </div>
+    </section>
+
+    <div style="padding-bottom: 60px; text-align:center;">
+      <p style="font-size:0.78rem; color:var(--text-muted); font-family:'DM Mono',monospace;">
+        VanGuard AIOps · UX Research Report
+      </p>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(n => n.classList.remove('active'));
+        const active = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.25 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

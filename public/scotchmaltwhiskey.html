@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Scotch Malt Whiskey — Project Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #D8BF7B;
+    --gold-light: #e8d49b;
+    --gold-pale: #f5edcd;
+    --black: #0a0a0a;
+    --dark: #111111;
+    --dark2: #1a1a1a;
+    --dark3: #252525;
+    --mid: #3a3a3a;
+    --muted: #5F5F5F;
+    --light: #cdcdcd;
+    --white: #f8f5f0;
+    --green: #064025;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Lora', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── COVER ─── */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 60px 80px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--mid);
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 80% 50%, rgba(164,136,103,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cover-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .cover-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .cover-index {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-align: right;
+    line-height: 2;
+  }
+
+  .cover-center {
+    text-align: center;
+    padding: 60px 0;
+  }
+
+  .cover-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+  }
+
+  .cover-title {
+    font-family: var(--serif);
+    font-size: clamp(64px, 10vw, 130px);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .cover-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .cover-subtitle {
+    font-family: var(--serif);
+    font-size: clamp(22px, 3vw, 38px);
+    font-weight: 300;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 20px;
+  }
+
+  .cover-rule {
+    width: 80px;
+    height: 1px;
+    background: var(--gold);
+    margin: 40px auto;
+    opacity: 0.6;
+  }
+
+  .cover-meta {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    text-align: center;
+  }
+
+  .meta-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .meta-value {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--light);
+  }
+
+  .cover-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .cover-url {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+
+  .cover-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ─── NAV ─── */
+  .sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--dark3);
+    padding: 0 80px;
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 52px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-inner::-webkit-scrollbar { display: none; }
+
+  .nav-link {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0 20px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid var(--dark3);
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+
+  .nav-link:first-child { border-left: 1px solid var(--dark3); }
+  .nav-link:hover { color: var(--gold); }
+
+  /* ─── SECTIONS ─── */
+  section {
+    padding: 100px 80px;
+    border-bottom: 1px solid var(--dark3);
+  }
+
+  section:last-child { border-bottom: none; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    flex-shrink: 0;
+    padding-top: 6px;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--white);
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  /* ─── OVERVIEW GRID ─── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--dark3);
+    border: 1px solid var(--dark3);
+  }
+
+  .overview-cell {
+    background: var(--dark);
+    padding: 40px 48px;
+  }
+
+  .overview-cell.full { grid-column: 1 / -1; }
+  .overview-cell.accent { background: var(--dark2); }
+
+  .cell-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .cell-value {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--white);
+    line-height: 1.3;
+  }
+
+  .cell-body {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-top: 8px;
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(216,191,123,0.3);
+    padding: 4px 12px;
+    border-radius: 2px;
+  }
+
+  .tag.tech {
+    color: var(--light);
+    border-color: var(--mid);
+  }
+
+  /* ─── BIG STAT ROW ─── */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: var(--dark3);
+    border: 1px solid var(--dark3);
+    margin-bottom: 64px;
+  }
+
+  .stat-cell {
+    background: var(--dark);
+    padding: 40px 32px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: var(--serif);
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-num em { color: var(--gold); font-style: normal; }
+
+  .stat-desc {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ─── FEATURES ─── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    background: var(--dark3);
+    border: 1px solid var(--dark3);
+  }
+
+  .feature-card {
+    background: var(--dark);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(216,191,123,0.3);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .feature-icon svg { width: 18px; height: 18px; stroke: var(--gold); fill: none; stroke-width: 1.5; }
+
+  .feature-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .feature-body {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .feature-chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(216,191,123,0.2);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-top: 16px;
+  }
+
+  /* ─── PAGES TABLE ─── */
+  .pages-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--dark3);
+  }
+
+  .pages-table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 16px 24px;
+    background: var(--dark2);
+    border-bottom: 1px solid var(--dark3);
+    border-right: 1px solid var(--dark3);
+    font-weight: 400;
+  }
+
+  .pages-table td {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--dark3);
+    border-right: 1px solid var(--dark3);
+    vertical-align: top;
+    background: var(--dark);
+  }
+
+  .pages-table tr:last-child td { border-bottom: none; }
+  .pages-table th:last-child,
+  .pages-table td:last-child { border-right: none; }
+
+  .td-page {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--white);
+  }
+
+  .td-route {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--gold);
+  }
+
+  .td-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 360px;
+  }
+
+  .td-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .badge-gold { background: rgba(216,191,123,0.12); color: var(--gold); }
+  .badge-light { background: rgba(205,205,205,0.08); color: var(--light); }
+  .badge-green { background: rgba(6,64,37,0.4); color: #6db88a; }
+
+  /* ─── DESIGN SYSTEM ─── */
+  .design-system {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--dark3);
+    border: 1px solid var(--dark3);
+    margin-bottom: 64px;
+  }
+
+  .ds-cell {
+    background: var(--dark);
+    padding: 40px 40px;
+  }
+
+  .ds-cell.full { grid-column: 1 / -1; }
+
+  .ds-subtitle {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .color-swatches {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+
+  .swatch {
+    height: 48px;
+    border-radius: 2px;
+    flex: 1;
+  }
+
+  .color-labels {
+    display: flex;
+    gap: 4px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .color-labels span { flex: 1; text-align: center; }
+
+  .font-demo {
+    margin-bottom: 24px;
+  }
+
+  .font-demo-heading {
+    font-family: var(--serif);
+    font-size: 42px;
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+
+  .font-demo-body {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .font-name {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-top: 8px;
+  }
+
+  /* ─── COMPONENTS ─── */
+  .comp-showcase {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    background: var(--dark3);
+    border: 1px solid var(--dark3);
+  }
+
+  .comp-cell {
+    background: var(--dark);
+    padding: 36px 32px;
+  }
+
+  .comp-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  /* mini hero preview */
+  .mini-hero {
+    background: var(--dark2);
+    border: 1px solid var(--dark3);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .mini-hero-bar {
+    height: 32px;
+    background: var(--black);
+    border-bottom: 1px solid var(--dark3);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 6px;
+  }
+
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  .mini-hero-body {
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .mini-text-block { flex: 1; }
+  .mini-h1 { font-family: var(--serif); font-size: 22px; color: var(--white); line-height: 1; margin-bottom: 4px; }
+  .mini-p { font-size: 9px; color: var(--muted); line-height: 1.5; }
+  .mini-search {
+    background: #2A2A2A;
+    border: 1px solid #404040;
+    border-radius: 20px;
+    padding: 6px 10px;
+    font-size: 9px;
+    color: #999;
+    margin-top: 8px;
+    font-family: var(--mono);
+  }
+
+  .mini-video {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .play-tri {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 0 8px 14px;
+    border-color: transparent transparent transparent rgba(216,191,123,0.6);
+    margin-left: 3px;
+  }
+
+  /* mini card */
+  .mini-product {
+    background: var(--dark2);
+    border: 1px solid var(--dark3);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .mini-product-img {
+    height: 64px;
+    background: linear-gradient(180deg, #1e1e1e 0%, #333 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mini-bottle {
+    width: 8px;
+    height: 40px;
+    background: linear-gradient(180deg, rgba(216,191,123,0.6), rgba(164,136,103,0.3));
+    border-radius: 3px 3px 1px 1px;
+    position: relative;
+  }
+
+  .mini-bottle::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 6px;
+    background: rgba(216,191,123,0.8);
+    border-radius: 2px 2px 0 0;
+  }
+
+  .mini-product-info {
+    padding: 8px 10px;
+  }
+
+  .mini-prod-name { font-family: var(--serif); font-size: 13px; color: var(--white); margin-bottom: 2px; }
+  .mini-prod-price { font-family: var(--mono); font-size: 9px; color: var(--gold); }
+  .mini-prod-btns { display: flex; gap: 4px; margin-top: 6px; }
+  .mini-btn-w { background: var(--white); color: #000; font-size: 7px; letter-spacing: 0.1em; padding: 4px 0; border-radius: 20px; flex: 1; text-align: center; font-family: var(--mono); }
+  .mini-btn-d { background: #0e0e0e; border: 1px solid #3a3a3a; color: var(--white); font-size: 7px; letter-spacing: 0.1em; padding: 4px 0; border-radius: 20px; flex: 1; text-align: center; font-family: var(--mono); }
+
+  /* mini nav */
+  .mini-nav {
+    background: var(--black);
+    border: 1px solid var(--dark3);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .mini-nav-bar {
+    height: 36px;
+    background: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--dark3);
+  }
+
+  .mini-logo { width: 24px; height: 10px; background: var(--gold); border-radius: 1px; opacity: 0.7; }
+  .mini-links { display: flex; gap: 10px; }
+  .mini-link-item { font-family: var(--mono); font-size: 7px; color: var(--muted); letter-spacing: 0.1em; }
+  .mini-cart-icon {
+    width: 16px; height: 12px;
+    border: 1px solid var(--muted);
+    border-radius: 1px;
+    position: relative;
+  }
+
+  .mini-cart-icon::after {
+    content: '2';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 10px;
+    height: 10px;
+    background: #5F5F5F;
+    border-radius: 50%;
+    font-size: 6px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 10px;
+    text-align: center;
+    font-family: var(--mono);
+  }
+
+  .mini-mobile-menu {
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .mini-menu-item {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--light);
+    letter-spacing: 0.1em;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--dark3);
+  }
+
+  /* ─── STACK ─── */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--dark3);
+    border: 1px solid var(--dark3);
+  }
+
+  .stack-cell {
+    background: var(--dark);
+    padding: 32px 32px;
+  }
+
+  .stack-category {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .stack-list {
+    list-style: none;
+  }
+
+  .stack-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--dark3);
+    font-size: 14px;
+    color: var(--light);
+  }
+
+  .stack-list li:last-child { border-bottom: none; }
+
+  .stack-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+
+  .stack-version {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  /* ─── ARCHITECTURE ─── */
+  .arch-diagram {
+    border: 1px solid var(--dark3);
+    padding: 60px 60px;
+    background: var(--dark);
+    margin-bottom: 48px;
+  }
+
+  .arch-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+    row-gap: 24px;
+  }
+
+  .arch-node {
+    border: 1px solid var(--dark3);
+    padding: 16px 24px;
+    text-align: center;
+    min-width: 110px;
+    background: var(--dark2);
+  }
+
+  .arch-node.highlight {
+    border-color: rgba(216,191,123,0.4);
+    background: rgba(216,191,123,0.05);
+  }
+
+  .arch-node-title {
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .arch-node-sub {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .arch-arrow {
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--dark3);
+    padding: 0 8px;
+    user-select: none;
+  }
+
+  /* ─── PULLQUOTE ─── */
+  .pullquote {
+    border-left: 2px solid var(--gold);
+    padding: 24px 40px;
+    margin: 64px 0;
+    background: rgba(216,191,123,0.03);
+  }
+
+  .pq-text {
+    font-family: var(--serif);
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--white);
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+
+  .pq-source {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 16px;
+  }
+
+  /* ─── HIGHLIGHTS ─── */
+  .highlights-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--dark3);
+    border: 1px solid var(--dark3);
+  }
+
+  .highlight-item {
+    background: var(--dark);
+    padding: 32px 36px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .hi-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+    padding-top: 4px;
+  }
+
+  .hi-text {
+    font-size: 15px;
+    color: var(--light);
+    line-height: 1.7;
+  }
+
+  .hi-text strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  /* ─── FOOTER ─── */
+  .report-footer {
+    padding: 60px 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    border-top: 1px solid var(--dark3);
+  }
+
+  .footer-brand {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--white);
+  }
+
+  .footer-brand em { font-style: italic; color: var(--gold); }
+
+  .footer-info {
+    text-align: right;
+  }
+
+  .footer-info p {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    line-height: 2;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .cover, section, .sticky-nav { padding-left: 32px; padding-right: 32px; }
+    .cover { padding-top: 40px; padding-bottom: 40px; }
+    .features-grid, .comp-showcase, .stack-grid { grid-template-columns: 1fr; }
+    .overview-grid, .design-system, .highlights-list { grid-template-columns: 1fr; }
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    .pages-table { display: block; overflow-x: auto; }
+    .report-footer { padding: 40px 32px; }
+    .footer-info { text-align: left; }
+    .cover-meta { gap: 32px; }
+    .arch-diagram { padding: 32px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ COVER ══════════════════ -->
+<div class="cover">
+  <div class="cover-top">
+    <div>
+      <div class="cover-label">Portfolio Project — 2026</div>
+    </div>
+    <div class="cover-index">
+      <div>01 — Overview</div>
+      <div>02 — Design System</div>
+      <div>03 — Pages & Features</div>
+      <div>04 — Tech Stack</div>
+      <div>05 — Architecture</div>
+    </div>
+  </div>
+
+  <div class="cover-center">
+    <div class="cover-eyebrow">Project Showcase Report</div>
+    <div class="cover-title">
+      Scotch<br><em>Malt</em><br>Whiskey
+    </div>
+    <div class="cover-subtitle">A luxury whisky e-commerce experience</div>
+    <div class="cover-rule"></div>
+    <div class="cover-meta">
+      <div class="meta-item">
+        <span class="meta-label">Type</span>
+        <span class="meta-value">E-Commerce / Brand</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Deployed</span>
+        <span class="meta-value">Netlify CDN</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Framework</span>
+        <span class="meta-value">React 18 + Vite</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Pages</span>
+        <span class="meta-value">6 Routes</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-bottom">
+    <span class="cover-url">scotchmaltwhiskey.netlify.app</span>
+    <span class="cover-num">I / V</span>
+  </div>
+</div>
+
+<!-- ══════════════════ NAV ══════════════════ -->
+<nav class="sticky-nav">
+  <div class="nav-inner">
+    <a class="nav-link" href="#overview">01 — Overview</a>
+    <a class="nav-link" href="#design">02 — Design System</a>
+    <a class="nav-link" href="#pages">03 — Pages & Features</a>
+    <a class="nav-link" href="#stack">04 — Tech Stack</a>
+    <a class="nav-link" href="#architecture">05 — Architecture</a>
+  </div>
+</nav>
+
+<!-- ══════════════════ 01 OVERVIEW ══════════════════ -->
+<section id="overview">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Project<br><em>Overview</em></h2>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-cell">
+      <div class="stat-num">6</div>
+      <div class="stat-desc">Unique Pages</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num"><em>9</em></div>
+      <div class="stat-desc">Home Sections</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">3</div>
+      <div class="stat-desc">Video Carousels</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num"><em>NFT</em></div>
+      <div class="stat-desc">Web3 Concept</div>
+    </div>
+  </div>
+
+  <div class="overview-grid">
+    <div class="overview-cell accent">
+      <span class="cell-label">Concept</span>
+      <div class="cell-value">Luxury Whisky Platform</div>
+      <div class="cell-body">A full-featured e-commerce and discovery platform for rare, collectible Scotch Malt Whiskies — blending traditional brand aesthetics with a forward-thinking NFT-based ownership model.</div>
+    </div>
+    <div class="overview-cell">
+      <span class="cell-label">Core Value Proposition</span>
+      <div class="cell-value">Physical meets digital ownership</div>
+      <div class="cell-body">Bottles and casks are tokenised as NFTs, allowing owners to securely trade, transfer, and verify provenance on a public blockchain — removing the need for costly intermediaries.</div>
+    </div>
+    <div class="overview-cell">
+      <span class="cell-label">Visual Identity</span>
+      <div class="cell-value">Dark luxury with gold accents</div>
+      <div class="cell-body">A deep black canvas (#0A0A0A) anchors the entire interface, offset by warm champagne gold (#D8BF7B) as the primary accent and muted greys as supporting tones.</div>
+      <div class="tag-row">
+        <span class="tag">#0A0A0A Black</span>
+        <span class="tag">#D8BF7B Gold</span>
+        <span class="tag">#064025 Forest</span>
+        <span class="tag">#5F5F5F Muted</span>
+      </div>
+    </div>
+    <div class="overview-cell accent">
+      <span class="cell-label">Target Audience</span>
+      <div class="cell-value">Collectors &amp; connoisseurs</div>
+      <div class="cell-body">Designed for premium whisky enthusiasts who appreciate both the physical product and its digital provenance — a market segment where trust, rarity, and presentation are paramount.</div>
+    </div>
+    <div class="overview-cell full">
+      <span class="cell-label">Key Strengths at a Glance</span>
+      <div class="tag-row" style="margin-top:0;">
+        <span class="tag tech">Fully Responsive</span>
+        <span class="tag tech">SPA Architecture</span>
+        <span class="tag tech">Custom Video Hero</span>
+        <span class="tag tech">Image + Video Carousels</span>
+        <span class="tag tech">NFT Marketplace UI</span>
+        <span class="tag tech">Live Cart State</span>
+        <span class="tag tech">Luxury Typography</span>
+        <span class="tag tech">shadcn/ui Components</span>
+        <span class="tag tech">Netlify CDN Deployed</span>
+        <span class="tag tech">Newsletter Subscription</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ 02 DESIGN SYSTEM ══════════════════ -->
+<section id="design">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Design<br><em>System</em></h2>
+  </div>
+
+  <div class="design-system">
+    <div class="ds-cell">
+      <div class="ds-subtitle">Colour Palette</div>
+      <div class="color-swatches">
+        <div class="swatch" style="background:#0A0A0A; border:1px solid #222;"></div>
+        <div class="swatch" style="background:#111111;"></div>
+        <div class="swatch" style="background:#1A1A1A;"></div>
+        <div class="swatch" style="background:#3A3A3A;"></div>
+        <div class="swatch" style="background:#5F5F5F;"></div>
+        <div class="swatch" style="background:#CDCDCD;"></div>
+      </div>
+      <div class="color-labels">
+        <span>#0A0A0A</span>
+        <span>#111</span>
+        <span>#1A1A1A</span>
+        <span>#3A3A3A</span>
+        <span>#5F5F5F</span>
+        <span>#CDCDCD</span>
+      </div>
+      <div style="height:16px;"></div>
+      <div class="color-swatches">
+        <div class="swatch" style="background:#D8BF7B; flex:3;"></div>
+        <div class="swatch" style="background:#A48867; flex:2;"></div>
+        <div class="swatch" style="background:#064025; flex:2;"></div>
+        <div class="swatch" style="background:#f8f5f0; flex:2;"></div>
+      </div>
+      <div class="color-labels">
+        <span style="flex:3;">#D8BF7B Gold</span>
+        <span style="flex:2;">#A48867 Warm</span>
+        <span style="flex:2;">#064025 Forest</span>
+        <span style="flex:2;">#F8F5F0 Cream</span>
+      </div>
+    </div>
+    <div class="ds-cell">
+      <div class="ds-subtitle">Typography</div>
+      <div class="font-demo">
+        <div class="font-demo-heading" style="font-size:48px;">Cormorant Garamond</div>
+        <div class="font-name">— Display / Headings — Weights: 300, 400, 500, 600, 700</div>
+      </div>
+      <div class="font-demo">
+        <div class="font-demo-body" style="font-size:16px; color: var(--light);">Lora — body text, descriptions, UI copy. Chosen for its warm, editorial feel that complements the serif display font while remaining highly legible at small sizes.</div>
+        <div class="font-name">— Body / UI — Weights: 400, 500, 600, 700</div>
+      </div>
+      <div class="font-demo">
+        <div class="font-demo-body" style="font-family: 'DM Mono', monospace; color: var(--gold); font-size:13px;">LABELS · TAGS · METADATA · CODES</div>
+        <div class="font-name">— Monospace labels (DM Mono) — tracking: 0.2–0.3em</div>
+      </div>
+    </div>
+    <div class="ds-cell full">
+      <div class="ds-subtitle">Motion & Interaction Language</div>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:2px; background:var(--dark3);">
+        <div style="background:var(--dark2); padding:24px 20px;">
+          <div style="font-family:var(--mono); font-size:10px; color:var(--gold); letter-spacing:0.2em; margin-bottom:12px;">IMAGE HOVER</div>
+          <div style="font-size:14px; color:var(--muted); line-height:1.7;">All product and collection images use <code style="font-family:var(--mono); font-size:11px; color:var(--light);">scale(1.1)</code> on hover with a 500ms ease transition — creating a premium cinematic reveal effect.</div>
+        </div>
+        <div style="background:var(--dark2); padding:24px 20px;">
+          <div style="font-family:var(--mono); font-size:10px; color:var(--gold); letter-spacing:0.2em; margin-bottom:12px;">CAROUSEL</div>
+          <div style="font-size:14px; color:var(--muted); line-height:1.7;">The hero cycles through 3 cinematic whisky videos at 20s / 12s / 15s intervals, with a 1000ms opacity crossfade. Autoplay resumes after 10s of user inactivity.</div>
+        </div>
+        <div style="background:var(--dark2); padding:24px 20px;">
+          <div style="font-family:var(--mono); font-size:10px; color:var(--gold); letter-spacing:0.2em; margin-bottom:12px;">BUTTONS</div>
+          <div style="font-size:14px; color:var(--muted); line-height:1.7;">Two-tier button system: white pill (primary CTA) with a <code style="font-family:var(--mono); font-size:11px; color:var(--light);">rgba(255,255,255,0.2)</code> glow shadow, and a dark pill (secondary) — both with hover color transitions.</div>
+        </div>
+        <div style="background:var(--dark2); padding:24px 20px;">
+          <div style="font-family:var(--mono); font-size:10px; color:var(--gold); letter-spacing:0.2em; margin-bottom:12px;">BORDERS</div>
+          <div style="font-size:14px; color:var(--muted); line-height:1.7;">Marketplace and brand cards use a subtle border shift on hover from <code style="font-family:var(--mono); font-size:11px; color:var(--light);">#2b2b2b</code> to gold — clearly signalling interactivity without disrupting the calm aesthetic.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pullquote">
+    <div class="pq-text">"The pairing of Cormorant Garamond for display and Lora for body text creates a typographic voice that feels simultaneously historic and contemporary — matching the whisky category's dual identity of tradition and premiumness."</div>
+    <div class="pq-source">— Typography Decision</div>
+  </div>
+
+  <!-- Component Showcase -->
+  <div class="ds-subtitle" style="margin-bottom:24px;">Component Showcase</div>
+  <div class="comp-showcase">
+    <div class="comp-cell">
+      <div class="comp-label">Fixed Header — with cart badge &amp; mobile menu</div>
+      <div class="mini-nav">
+        <div class="mini-nav-bar">
+          <div class="mini-logo"></div>
+          <div class="mini-links">
+            <span class="mini-link-item">Releases</span>
+            <span class="mini-link-item">Market Place</span>
+            <span class="mini-link-item">Brands</span>
+          </div>
+          <div class="mini-cart-icon"></div>
+        </div>
+        <div class="mini-mobile-menu">
+          <div class="mini-menu-item">Releases</div>
+          <div class="mini-menu-item">Market Place</div>
+          <div class="mini-menu-item" style="border-bottom:none;">Brands</div>
+        </div>
+      </div>
+    </div>
+    <div class="comp-cell">
+      <div class="comp-label">Hero — video carousel with search</div>
+      <div class="mini-hero">
+        <div class="mini-hero-bar">
+          <div class="dot" style="background:#ff5f57;"></div>
+          <div class="dot" style="background:#febc2e;"></div>
+          <div class="dot" style="background:#28c840;"></div>
+        </div>
+        <div class="mini-hero-body">
+          <div class="mini-text-block">
+            <div style="font-family:var(--mono); font-size:8px; color:var(--gold); letter-spacing:0.2em; margin-bottom:4px;">SCOTCH</div>
+            <div class="mini-h1">Malt<br>Whiskey</div>
+            <div class="mini-search">Which bottle are you looking for?</div>
+          </div>
+          <div class="mini-video">
+            <div class="play-tri"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="comp-cell">
+      <div class="comp-label">Product Card — with colour swatches &amp; actions</div>
+      <div class="mini-product">
+        <div class="mini-product-img">
+          <div class="mini-bottle"></div>
+        </div>
+        <div class="mini-product-info">
+          <div class="mini-prod-name">Glenfiddich</div>
+          <div style="display:flex; align-items:center; gap:8px; margin-top:3px;">
+            <span class="mini-prod-price">$120</span>
+            <span style="font-family:var(--mono); font-size:9px; color:var(--muted); text-decoration:line-through;">$200</span>
+            <div style="display:flex; gap:4px; margin-left:auto;">
+              <div style="width:8px;height:8px;border-radius:50%;background:#2A282A; border:1px solid var(--muted);"></div>
+              <div style="width:8px;height:8px;border-radius:50%;background:#E5E5E5;"></div>
+            </div>
+          </div>
+          <div class="mini-prod-btns">
+            <div class="mini-btn-w">BUY NOW</div>
+            <div class="mini-btn-d">ADD TO CART</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ 03 PAGES ══════════════════ -->
+<section id="pages">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Pages &amp;<br><em>Features</em></h2>
+  </div>
+
+  <table class="pages-table">
+    <thead>
+      <tr>
+        <th>Page</th>
+        <th>Route</th>
+        <th>Description</th>
+        <th>Notable Features</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div class="td-page">Home</div></td>
+        <td><div class="td-route">/</div></td>
+        <td><div class="td-desc">The centrepiece of the site. 9 distinct sections composing a full brand narrative — from cinematic hero to newsletter signup.</div></td>
+        <td><div class="td-tags">
+          <span class="badge badge-gold">Video Hero</span>
+          <span class="badge badge-gold">Carousels</span>
+          <span class="badge badge-light">Collections</span>
+          <span class="badge badge-light">NFT Story</span>
+          <span class="badge badge-light">Products</span>
+          <span class="badge badge-light">50% Offer</span>
+        </div></td>
+      </tr>
+      <tr>
+        <td><div class="td-page">Marketplace</div></td>
+        <td><div class="td-route">/marketplace</div></td>
+        <td><div class="td-desc">A fully functional peer-to-peer marketplace listing rare bottles from multiple sellers, with NFT badges, pricing, sort controls, and buy actions.</div></td>
+        <td><div class="td-tags">
+          <span class="badge badge-gold">NFT Badges</span>
+          <span class="badge badge-gold">Sort UI</span>
+          <span class="badge badge-light">Filter Tabs</span>
+          <span class="badge badge-light">Price Range</span>
+          <span class="badge badge-green">6 Listings</span>
+        </div></td>
+      </tr>
+      <tr>
+        <td><div class="td-page">Brands</div></td>
+        <td><div class="td-route">/brands</div></td>
+        <td><div class="td-desc">A curated directory of world-class distilleries — featuring a flagship brand spotlight and a full grid of 6 premium brands with country of origin.</div></td>
+        <td><div class="td-tags">
+          <span class="badge badge-gold">Hero Spotlight</span>
+          <span class="badge badge-light">Brand Grid</span>
+          <span class="badge badge-light">Hover Effects</span>
+          <span class="badge badge-green">6 Brands</span>
+        </div></td>
+      </tr>
+      <tr>
+        <td><div class="td-page">Cart</div></td>
+        <td><div class="td-route">/cart</div></td>
+        <td><div class="td-desc">A fully interactive shopping cart with quantity management, item removal, and a sticky order summary with real-time total calculation.</div></td>
+        <td><div class="td-tags">
+          <span class="badge badge-gold">Live Totals</span>
+          <span class="badge badge-gold">Qty Control</span>
+          <span class="badge badge-light">Remove Items</span>
+          <span class="badge badge-light">Sticky Summary</span>
+          <span class="badge badge-light">Checkout CTA</span>
+        </div></td>
+      </tr>
+      <tr>
+        <td><div class="td-page">Releases</div></td>
+        <td><div class="td-route">/releases</div></td>
+        <td><div class="td-desc">Dedicated page for new and upcoming bottle releases — designed to surface limited editions and keep collectors returning for drops.</div></td>
+        <td><div class="td-tags">
+          <span class="badge badge-gold">New Drops</span>
+          <span class="badge badge-light">Limited Editions</span>
+        </div></td>
+      </tr>
+      <tr>
+        <td><div class="td-page">Profile</div></td>
+        <td><div class="td-route">/profile</div></td>
+        <td><div class="td-desc">Personal user profile page — showing account details, collection history, and a personalised view of the user's owned assets.</div></td>
+        <td><div class="td-tags">
+          <span class="badge badge-gold">User Avatar</span>
+          <span class="badge badge-light">Collection View</span>
+        </div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="height:64px;"></div>
+
+  <!-- Home Page Sections breakdown -->
+  <div class="ds-subtitle" style="margin-bottom:24px;">Home Page — Section Breakdown</div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+      <div class="feature-title">Cinematic Hero</div>
+      <div class="feature-body">Three autoplay whisky videos loop as a crossfade carousel. Timed individually (20s, 12s, 15s) with dot navigation. A bold search bar and smooth-scroll CTA anchor the left panel alongside the massive "Malt Whiskey" typographic lockup.</div>
+      <span class="feature-chip">Video Carousel</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      </div>
+      <div class="feature-title">Collections Grid</div>
+      <div class="feature-body">Four portrait-aspect collection cards (Premium, Famous, Expensive, Classic) with full-bleed images, gradient overlays, and hover scale + colour transitions — revealing the category title on a dark gradient base.</div>
+      <span class="feature-chip">Hover Interactions</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="feature-title">NFT Ownership Story</div>
+      <div class="feature-body">Two editorial sections — "Marriage of the Physical & Virtual" and "Ownership Details" — use a left-right split layout with large contrasting headings to explain the blockchain provenance model in clear, compelling language.</div>
+      <span class="feature-chip">Web3 Narrative</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+      </div>
+      <div class="feature-title">Featured Products</div>
+      <div class="feature-body">Jameson, Barterhouse, and Glenfiddich are showcased in a 3-column grid. Each card features a product image, interactive colour swatches, sale price with strikethrough original, origin tags, and dual Buy/Cart CTAs.</div>
+      <span class="feature-chip">Interactive Swatches</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      </div>
+      <div class="feature-title">Feed Your Soul</div>
+      <div class="feature-body">The most visually ambitious section: a full-height split layout pairing a static barrel editorial image with an auto-advancing 5-image vertical carousel. Vertical dot navigation, glassmorphism collection label, and a large "Feed your soul" typographic statement at 180px.</div>
+      <span class="feature-chip">Split Layout</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      </div>
+      <div class="feature-title">50% Special Offer</div>
+      <div class="feature-body">A bold promotional section with a hero image on the left and a massive typographic "50% Special — Offers You Love" statement scaling to 160px on desktop. A radial blur decorative circle adds atmospheric depth to the image.</div>
+      <span class="feature-chip">Promotional Hero</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div class="feature-title">Footer &amp; Newsletter</div>
+      <div class="feature-body">A 4-column footer covering Our Promises, Help links, App Downloads, and Contact. Below it, a newsletter capture with a dark rounded input field, email validation, and a real-time "Subscribed!" state confirmation.</div>
+      <span class="feature-chip">Live Validation</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div class="feature-title">Full Responsiveness</div>
+      <div class="feature-body">Every section has been built mobile-first with Tailwind breakpoints. The nav collapses to a hamburger menu, grid layouts reflow from 3-column to single column, the hero reorders visually, and font sizes scale fluidly with clamp utilities.</div>
+      <span class="feature-chip">Mobile First</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </div>
+      <div class="feature-title">Netlify Deployment</div>
+      <div class="feature-body">Deployed to Netlify's global CDN via a Vite production build. The static asset bundle is instantly available worldwide with zero cold-start latency — delivering the premium experience users expect from a luxury brand.</div>
+      <span class="feature-chip">Global CDN</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ 04 TECH STACK ══════════════════ -->
+<section id="stack">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Technology<br><em>Stack</em></h2>
+  </div>
+
+  <div class="stack-grid">
+    <div class="stack-cell">
+      <div class="stack-category">Core Framework</div>
+      <ul class="stack-list">
+        <li><span class="stack-dot"></span>React<span class="stack-version">18.3.1</span></li>
+        <li><span class="stack-dot"></span>React DOM<span class="stack-version">18.3.1</span></li>
+        <li><span class="stack-dot"></span>React Router<span class="stack-version">7.13.0</span></li>
+        <li><span class="stack-dot"></span>TypeScript<span class="stack-version">strict</span></li>
+        <li><span class="stack-dot"></span>Vite<span class="stack-version">6.3.5</span></li>
+      </ul>
+    </div>
+    <div class="stack-cell">
+      <div class="stack-category">Styling</div>
+      <ul class="stack-list">
+        <li><span class="stack-dot"></span>Tailwind CSS<span class="stack-version">4.1.12</span></li>
+        <li><span class="stack-dot"></span>PostCSS<span class="stack-version">config</span></li>
+        <li><span class="stack-dot"></span>tw-animate-css<span class="stack-version">1.3.8</span></li>
+        <li><span class="stack-dot"></span>Cormorant Garamond<span class="stack-version">Google</span></li>
+        <li><span class="stack-dot"></span>Lora<span class="stack-version">Google</span></li>
+      </ul>
+    </div>
+    <div class="stack-cell">
+      <div class="stack-category">Component Library</div>
+      <ul class="stack-list">
+        <li><span class="stack-dot"></span>shadcn/ui (Radix UI)<span class="stack-version">full</span></li>
+        <li><span class="stack-dot"></span>Radix UI Primitives<span class="stack-version">latest</span></li>
+        <li><span class="stack-dot"></span>Lucide React<span class="stack-version">0.487.0</span></li>
+        <li><span class="stack-dot"></span>Embla Carousel<span class="stack-version">8.6.0</span></li>
+        <li><span class="stack-dot"></span>class-variance-authority<span class="stack-version">0.7.1</span></li>
+      </ul>
+    </div>
+    <div class="stack-cell">
+      <div class="stack-category">Utilities &amp; Forms</div>
+      <ul class="stack-list">
+        <li><span class="stack-dot"></span>React Hook Form<span class="stack-version">7.55.0</span></li>
+        <li><span class="stack-dot"></span>Motion<span class="stack-version">12.23.24</span></li>
+        <li><span class="stack-dot"></span>React DnD<span class="stack-version">16.0.1</span></li>
+        <li><span class="stack-dot"></span>sonner (toasts)<span class="stack-version">2.0.3</span></li>
+        <li><span class="stack-dot"></span>clsx + tailwind-merge<span class="stack-version">latest</span></li>
+      </ul>
+    </div>
+    <div class="stack-cell">
+      <div class="stack-category">Data &amp; Visualisation</div>
+      <ul class="stack-list">
+        <li><span class="stack-dot"></span>Recharts<span class="stack-version">2.15.2</span></li>
+        <li><span class="stack-dot"></span>React Masonry<span class="stack-version">2.7.1</span></li>
+        <li><span class="stack-dot"></span>date-fns<span class="stack-version">3.6.0</span></li>
+        <li><span class="stack-dot"></span>canvas-confetti<span class="stack-version">1.9.4</span></li>
+      </ul>
+    </div>
+    <div class="stack-cell">
+      <div class="stack-category">Deployment &amp; Build</div>
+      <ul class="stack-list">
+        <li><span class="stack-dot"></span>Netlify CDN<span class="stack-version">live</span></li>
+        <li><span class="stack-dot"></span>Vite Build<span class="stack-version">prod</span></li>
+        <li><span class="stack-dot"></span>pnpm Workspace<span class="stack-version">latest</span></li>
+        <li><span class="stack-dot"></span>Git Version Control<span class="stack-version">.git</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ 05 ARCHITECTURE ══════════════════ -->
+<section id="architecture">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2 class="section-title">Project<br><em>Architecture</em></h2>
+  </div>
+
+  <div class="arch-diagram">
+    <div style="font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:40px; text-align:center;">Application Data Flow</div>
+    <div class="arch-flow">
+      <div class="arch-node highlight">
+        <div class="arch-node-title">Browser</div>
+        <div class="arch-node-sub">user entry</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <div class="arch-node-title">Netlify CDN</div>
+        <div class="arch-node-sub">global edge</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <div class="arch-node-title">Vite Bundle</div>
+        <div class="arch-node-sub">static assets</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node highlight">
+        <div class="arch-node-title">React SPA</div>
+        <div class="arch-node-sub">App.tsx</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <div class="arch-node-title">Router</div>
+        <div class="arch-node-sub">react-router v7</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node highlight">
+        <div class="arch-node-title">Pages</div>
+        <div class="arch-node-sub">6 routes</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:24px; text-align:center; border-top:1px solid var(--dark3); padding-top:40px;">Source File Structure</div>
+
+  <div style="border:1px solid var(--dark3); background:var(--dark); padding:48px 56px; font-family:var(--mono); font-size:13px; line-height:2.2; color:var(--muted);">
+    <span style="color:var(--gold);">src/</span><br>
+    &nbsp;&nbsp;<span style="color:var(--light);">main.tsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#3a3a3a;">— app entry point</span><br>
+    &nbsp;&nbsp;<span style="color:var(--gold);">app/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--light);">App.tsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#3a3a3a;">— router provider root</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--light);">routes.ts</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#3a3a3a;">— browser router config</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--gold);">pages/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#3a3a3a;">— 6 route-level components</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--muted);">Home · Cart · Profile · Releases · MarketPlace · Brands</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--gold);">components/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#3a3a3a;">— reusable section components</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--muted);">Header · Hero · Collections · Marriage · Products</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--muted);">FeedYourSoul · Ownership · SpecialOffer · Footer · Root</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--gold);">components/ui/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#3a3a3a;">— shadcn/ui primitive library</span><br>
+    &nbsp;&nbsp;<span style="color:var(--gold);">styles/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--light);">index.css · tailwind.css · theme.css · fonts.css</span><br>
+    &nbsp;&nbsp;<span style="color:var(--gold);">imports/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--light);">MacBookPro1/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#3a3a3a;">— hero videos, product images, SVG paths</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--light);">SliderImage · SliderImage-1/</span> &nbsp;&nbsp;<span style="color:#3a3a3a;">— carousel assets</span>
+  </div>
+
+  <div style="height:64px;"></div>
+
+  <div class="highlights-list">
+    <li class="highlight-item">
+      <span class="hi-num">01</span>
+      <span class="hi-text"><strong>Single Page Application.</strong> React Router v7 handles all 6 routes client-side — zero page reloads, instant navigation, and a seamless browsing feel that matches the luxury brand standard.</span>
+    </li>
+    <li class="highlight-item">
+      <span class="hi-num">02</span>
+      <span class="hi-text"><strong>Declarative component architecture.</strong> Every section is a self-contained React component with its own state — making the codebase modular, easy to extend, and reusable across future projects.</span>
+    </li>
+    <li class="highlight-item">
+      <span class="hi-num">03</span>
+      <span class="hi-text"><strong>Typed with TypeScript throughout.</strong> Full TypeScript usage ensures type safety across components, route parameters, and cart state — reducing runtime errors and improving developer experience.</span>
+    </li>
+    <li class="highlight-item">
+      <span class="hi-num">04</span>
+      <span class="hi-text"><strong>shadcn/ui + Radix UI primitive system.</strong> The complete shadcn/ui library is integrated, giving the project access to 40+ accessible, unstyled primitives (Accordion, Dialog, Carousel, Sheet, etc.) ready for extension.</span>
+    </li>
+    <li class="highlight-item">
+      <span class="hi-num">05</span>
+      <span class="hi-text"><strong>Autoplay fallback logic.</strong> The hero video carousel handles browser autoplay policies gracefully — detecting blocked autoplay, muting the video, and retrying automatically, ensuring a visual-first experience across all devices.</span>
+    </li>
+    <li class="highlight-item">
+      <span class="hi-num">06</span>
+      <span class="hi-text"><strong>Tailwind CSS v4 with custom theming.</strong> A dedicated <code style="font-family:var(--mono); font-size:12px;">theme.css</code> and <code style="font-family:var(--mono); font-size:12px;">fonts.css</code> sit alongside Tailwind, creating a design token layer — the gold, black, and cream palette is defined as CSS custom properties consumed throughout.</span>
+    </li>
+  </div>
+</section>
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<div class="report-footer">
+  <div class="footer-brand">Scotch <em>Malt</em> Whiskey</div>
+  <div class="footer-info">
+    <p>PORTFOLIO PROJECT REPORT</p>
+    <p>scotchmaltwhiskey.netlify.app</p>
+    <p>© 2026 — All rights reserved</p>
+  </div>
+</div>
+
+</body>
+</html>
