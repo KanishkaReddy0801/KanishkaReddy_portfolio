@@ -58,221 +58,187 @@ export function Resume() {
 
   return (
     <PageTransition>
-      <div style={{ minHeight: "100vh", backgroundColor: "#ffffff", color: "#000000", paddingTop: "5rem", paddingBottom: "5rem", paddingLeft: "1rem", paddingRight: "1rem" }}>
+      <div className="min-h-screen bg-white text-black py-8 sm:py-12 md:py-16 px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          style={{ display: "flex", justifyContent: "center", marginBottom: "2rem" }}
+          className="flex justify-center mb-6 sm:mb-8 md:mb-10"
         >
           <button
             onClick={handleDownloadPDF}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              paddingLeft: "1.5rem",
-              paddingRight: "1.5rem",
-              paddingTop: "0.75rem",
-              paddingBottom: "0.75rem",
-              border: "1px solid #d1d5db",
-              borderRadius: "0.25rem",
-              backgroundColor: "#ffffff",
-              color: "#000000",
-              textTransform: "uppercase",
-              fontSize: "0.875rem",
-              letterSpacing: "0.05em",
-              cursor: "pointer",
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = "#f3f4f6";
-              (e.target as HTMLButtonElement).style.borderColor = "#9ca3af";
-            }}
-            onMouseLeave={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = "#ffffff";
-              (e.target as HTMLButtonElement).style.borderColor = "#d1d5db";
-            }}
+            className="inline-flex items-center gap-3 px-4 sm:px-6 py-2 sm:py-3 border border-gray-300 rounded text-black bg-white hover:bg-gray-100 hover:border-gray-400 transition-colors uppercase text-xs sm:text-sm tracking-wider"
           >
             <Download size={18} />
             Download PDF
           </button>
         </motion.div>
 
-        <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
+        <div className="max-w-4xl mx-auto">
           <motion.div
             ref={resumeRef}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            style={{
-              backgroundColor: "#ffffff",
-              color: "#000000",
-              borderRadius: "0.25rem",
-              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
-              overflow: "hidden",
-            }}
+            className="bg-white text-black rounded shadow-lg overflow-hidden"
             id="resume-content"
           >
             {/* Header */}
-            <div style={{ backgroundColor: "#ffffff", paddingLeft: "4rem", paddingRight: "4rem", paddingTop: "3rem", paddingBottom: "2rem", color: "#000000" }}>
-              <p style={{ fontSize: "0.75rem", fontFamily: "monospace", letterSpacing: "2px", color: "#4b5563", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+            <div className="bg-white px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10 text-black">
+              <p className="text-xs font-mono tracking-widest text-gray-600 uppercase mb-2 sm:mb-3">
                 Creative technologist bridging design and development
               </p>
-              <h1 style={{ fontSize: "3.75rem", fontWeight: 300, marginBottom: "0", color: "#000000", fontFamily: "'Manrope', sans-serif" }}>Kanishka</h1>
-              <h1 style={{ fontSize: "3.75rem", fontWeight: 700, marginBottom: "1rem", color: "#000000", fontFamily: "'Manrope', sans-serif" }}>Reddy</h1>
-              <div style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "#4b5563" }}>
-                
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-light mb-0 text-black" style={{ fontFamily: "'Manrope', sans-serif" }}>
+                Kanishka
+              </h1>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-2 sm:mb-4 text-black" style={{ fontFamily: "'Manrope', sans-serif" }}>
+                Reddy
+              </h1>
+              <div className="text-xs sm:text-sm font-mono text-gray-600 space-y-1">
                 <p>Portfolio: <a
-    href="https://www.kanishkareddy.space/"
-    target="_blank"
-    rel="noopener noreferrer"
-    style={{
-      margin: "0.2rem 0",
-      color: "#4b5563",
-      textDecoration: "underline",
-      cursor: "pointer",
-      fontSize: "18px",
-    }}
-  >
-    kanishkareddy.space
-  </a></p>
-  <p style={{ margin: "0.2rem 0" }}>Email: krishnakanishkareddyalla@gmail.com</p>
+                  href="https://www.kanishkareddy.space/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 underline hover:text-gray-800"
+                >
+                  kanishkareddy.space
+                </a></p>
+                <p>Email: krishnakanishkareddyalla@gmail.com</p>
               </div>
             </div>
 
             {/* Main Content */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 0 }}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
               {/* Left Column */}
-              <div style={{ gridColumn: "span 2", paddingLeft: "4rem", paddingRight: "4rem", paddingTop: "2rem", paddingBottom: "2rem", borderRight: "1px solid #e5e7eb" }}>
+              <div className="md:col-span-2 px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:border-r border-gray-200">
                 
                 {/* Bootlabs */}
-                <div style={{ marginBottom: "2.5rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.5rem" }}>
-                    <h2 style={{ fontSize: "1.5rem", fontWeight: 300, color: "#000000", fontFamily: "'Manrope', sans-serif" }}>Bootlabs</h2>
-                    <span style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "#6b7280" }}>May 2025 – Present</span>
+                <div className="mb-6 sm:mb-8 md:mb-10">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2 gap-2">
+                    <h2 className="text-xl sm:text-2xl font-light text-black" style={{ fontFamily: "'Manrope', sans-serif" }}>Bootlabs</h2>
+                    <span className="text-xs font-mono text-gray-600 flex-shrink-0">May 2025 – Present</span>
                   </div>
-                  <p style={{ fontSize: "0.875rem", fontFamily: "monospace", letterSpacing: "0.1em", textTransform: "uppercase", color: "#4b5563", marginBottom: "0.5rem" }}>UI/UX Designer</p>
-                  <p style={{ fontSize: "0.875rem", fontStyle: "italic", color: "#4b5563", marginBottom: "1.5rem", fontWeight: 300 }}>
+                  <p className="text-xs sm:text-sm font-mono tracking-wider uppercase text-gray-600 mb-2">UI/UX Designer</p>
+                  <p className="text-xs sm:text-sm italic text-gray-600 mb-3 font-light">
                     "Brought in to solve real problems for real clients. Designing systems that work as beautifully as they look."
                   </p>
                   
-                  <div style={{ marginBottom: "1rem" }}>
-                    <p style={{ fontSize: "0.75rem", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.1em", color: "#6b7280", marginBottom: "0.75rem" }}>Projects & Platforms</p>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-                      <div style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• Mahindra Crash Test Platform</div>
-                      <div style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• Vanguard AIOps</div>
-                      <div style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• HRA Platform</div>
-                      <div style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• JFS Agentic AI</div>
-                      <div style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• Cloud & Inventory Systems</div>
-                      <div style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• Enterprise Operations</div>
+                  <div className="mb-3">
+                    <p className="text-xs font-mono uppercase tracking-wider text-gray-600 mb-2">Projects & Platforms</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className="text-xs sm:text-sm font-light text-gray-800">• Mahindra Crash Test Platform</div>
+                      <div className="text-xs sm:text-sm font-light text-gray-800">• Vanguard AIOps</div>
+                      <div className="text-xs sm:text-sm font-light text-gray-800">• HRA Platform</div>
+                      <div className="text-xs sm:text-sm font-light text-gray-800">• JFS Agentic AI</div>
+                      <div className="text-xs sm:text-sm font-light text-gray-800">• Cloud & Inventory Systems</div>
+                      <div className="text-xs sm:text-sm font-light text-gray-800">• Enterprise Operations</div>
                     </div>
                   </div>
 
                   <div>
-                    <p style={{ fontSize: "0.75rem", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.1em", color: "#6b7280", marginBottom: "0.75rem" }}>Contributions</p>
-                    <ul style={{ listStyle: "none", padding: 0 }}>
-                      <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.5rem" }}>• UI/UX Design for complex systems</li>
-                      <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.5rem" }}>• Development support (SSO, workflows)</li>
-                      <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.5rem" }}>• Website maintenance & SEO</li>
-                      <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.5rem" }}>• Analytics integration</li>
-                      <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• Brand assets (email signatures, backgrounds)</li>
+                    <p className="text-xs font-mono uppercase tracking-wider text-gray-600 mb-2">Contributions</p>
+                    <ul className="space-y-1">
+                      <li className="text-xs sm:text-sm font-light text-gray-800">• UI/UX Design for complex systems</li>
+                      <li className="text-xs sm:text-sm font-light text-gray-800">• Development support (SSO, workflows)</li>
+                      <li className="text-xs sm:text-sm font-light text-gray-800">• Website maintenance & SEO</li>
+                      <li className="text-xs sm:text-sm font-light text-gray-800">• Analytics integration</li>
+                      <li className="text-xs sm:text-sm font-light text-gray-800">• Brand assets (email signatures, backgrounds)</li>
                     </ul>
                   </div>
                 </div>
 
                 {/* Ekavarna */}
-                <div style={{ marginBottom: "2.5rem", paddingBottom: "2.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "2.5rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.5rem" }}>
-                    <h2 style={{ fontSize: "1.5rem", fontWeight: 300, color: "#000000", fontFamily: "'Manrope', sans-serif" }}>Ekavarna Technologies</h2>
-                    <span style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "#6b7280" }}>Jun 2023 – Jun 2024</span>
+                <div className="mb-6 sm:mb-8 md:mb-10 pb-6 sm:pb-8 md:pb-10 border-t border-gray-200 pt-6 sm:pt-8 md:pt-10">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2 gap-2">
+                    <h2 className="text-xl sm:text-2xl font-light text-black" style={{ fontFamily: "'Manrope', sans-serif" }}>Ekavarna Technologies</h2>
+                    <span className="text-xs font-mono text-gray-600 flex-shrink-0">Jun 2023 – Jun 2024</span>
                   </div>
-                  <p style={{ fontSize: "0.875rem", fontFamily: "monospace", letterSpacing: "0.1em", textTransform: "uppercase", color: "#4b5563", marginBottom: "0.5rem" }}>Junior Developer</p>
-                  <p style={{ fontSize: "0.875rem", fontStyle: "italic", color: "#4b5563", marginBottom: "1.5rem", fontWeight: 300 }}>
+                  <p className="text-xs sm:text-sm font-mono tracking-wider uppercase text-gray-600 mb-2">Junior Developer</p>
+                  <p className="text-xs sm:text-sm italic text-gray-600 mb-3 font-light">
                     "The bridge between my two worlds. Learned that great code and great design speak the same language."
                   </p>
 
-                  <div style={{ marginBottom: "1rem" }}>
-                    <p style={{ fontSize: "0.75rem", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.1em", color: "#6b7280", marginBottom: "0.75rem" }}>Projects</p>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-                      <div style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• QRated Resources</div>
-                      <div style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• MSSPL</div>
-                      <div style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• RucJa</div>
-                      <div style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• Reson</div>
-                      <div style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• EmProject</div>
-                      <div style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• Ekavarna Code</div>
+                  <div className="mb-3">
+                    <p className="text-xs font-mono uppercase tracking-wider text-gray-600 mb-2">Projects</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className="text-xs sm:text-sm font-light text-gray-800">• QRated Resources</div>
+                      <div className="text-xs sm:text-sm font-light text-gray-800">• MSSPL</div>
+                      <div className="text-xs sm:text-sm font-light text-gray-800">• RucJa</div>
+                      <div className="text-xs sm:text-sm font-light text-gray-800">• Reson</div>
+                      <div className="text-xs sm:text-sm font-light text-gray-800">• EmProject</div>
+                      <div className="text-xs sm:text-sm font-light text-gray-800">• Ekavarna Code</div>
                     </div>
                   </div>
 
                   <div>
-                    <p style={{ fontSize: "0.75rem", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.1em", color: "#6b7280", marginBottom: "0.75rem" }}>Work Included</p>
-                    <ul style={{ listStyle: "none", padding: 0 }}>
-                      <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.5rem" }}>• Full-stack development</li>
-                      <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.5rem" }}>• API integration</li>
-                      <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.5rem" }}>• Performance optimization</li>
-                      <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.5rem" }}>• Authentication systems</li>
-                      <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>• AWS & S3 integrations</li>
+                    <p className="text-xs font-mono uppercase tracking-wider text-gray-600 mb-2">Work Included</p>
+                    <ul className="space-y-1">
+                      <li className="text-xs sm:text-sm font-light text-gray-800">• Full-stack development</li>
+                      <li className="text-xs sm:text-sm font-light text-gray-800">• API integration</li>
+                      <li className="text-xs sm:text-sm font-light text-gray-800">• Performance optimization</li>
+                      <li className="text-xs sm:text-sm font-light text-gray-800">• Authentication systems</li>
+                      <li className="text-xs sm:text-sm font-light text-gray-800">• AWS & S3 integrations</li>
                     </ul>
                   </div>
                 </div>
 
                 {/* Codestore */}
-                <div style={{ borderTop: "1px solid #e5e7eb", paddingTop: "4rem" }}>
-                  <div style={{ marginBottom: "0.5rem" }}>
-                    <h2 style={{ fontSize: "1.5rem", fontWeight: 300, color: "#000000", fontFamily: "'Manrope', sans-serif" }}>Codestore Technologies</h2>
+                <div className="border-t border-gray-200 pt-6 sm:pt-8 md:pt-10">
+                  <div className="mb-2">
+                    <h2 className="text-xl sm:text-2xl font-light text-black" style={{ fontFamily: "'Manrope', sans-serif" }}>Codestore Technologies</h2>
                   </div>
-                  <p style={{ fontSize: "0.875rem", fontFamily: "monospace", letterSpacing: "0.1em", textTransform: "uppercase", color: "#4b5563", marginBottom: "0.5rem" }}>Design Trainee</p>
-                  <p style={{ fontSize: "0.875rem", fontStyle: "italic", color: "#4b5563", fontWeight: 300 }}>
+                  <p className="text-xs sm:text-sm font-mono tracking-wider uppercase text-gray-600 mb-2">Design Trainee</p>
+                  <p className="text-xs sm:text-sm italic text-gray-600 font-light">
                     "Where it all started. Learning that design is about listening first, and creating with intention."
                   </p>
                 </div>
               </div>
 
-              {/* Right Column */}
-              <div style={{ gridColumn: "span 1", paddingLeft: "3rem", paddingRight: "3rem", paddingTop: "2rem", paddingBottom: "2rem", backgroundColor: "#f9fafb" }}>
+              {/* Right Column - Skills */}
+              <div className="col-span-1 px-4 sm:px-6 md:px-6 py-6 sm:py-8 md:py-6 bg-gray-50 md:border-l border-gray-200">
                 
                 {/* Development Skills */}
-                <div style={{ marginBottom: "2rem" }}>
-                  <h3 style={{ fontSize: "0.75rem", fontFamily: "monospace", letterSpacing: "0.1em", textTransform: "uppercase", color: "#4b5563", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: "2px solid #d1d5db" }}>Development</h3>
-                  <ul style={{ listStyle: "none", padding: 0 }}>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>JavaScript (ES6+)</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>React.js</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>Next.js</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>Node.js</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>MongoDB</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>REST APIs</li>
+                <div className="mb-6">
+                  <h3 className="text-xs font-mono tracking-wider uppercase text-gray-600 mb-3 pb-2 border-b-2 border-gray-300">Development</h3>
+                  <ul className="space-y-1">
+                    <li className="text-xs sm:text-sm font-light text-gray-800">JavaScript (ES6+)</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">React.js</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">Next.js</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">Node.js</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">MongoDB</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">REST APIs</li>
                   </ul>
                 </div>
 
                 {/* Design Skills */}
-                <div style={{ marginBottom: "2rem" }}>
-                  <h3 style={{ fontSize: "0.75rem", fontFamily: "monospace", letterSpacing: "0.1em", textTransform: "uppercase", color: "#4b5563", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: "2px solid #d1d5db" }}>Design</h3>
-                  <ul style={{ listStyle: "none", padding: 0 }}>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>Figma</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>UI/UX Design</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>Wireframing</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>Prototyping</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>Visual Design</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>Interaction Design</li>
+                <div className="mb-6">
+                  <h3 className="text-xs font-mono tracking-wider uppercase text-gray-600 mb-3 pb-2 border-b-2 border-gray-300">Design</h3>
+                  <ul className="space-y-1">
+                    <li className="text-xs sm:text-sm font-light text-gray-800">Figma</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">UI/UX Design</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">Wireframing</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">Prototyping</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">Visual Design</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">Interaction Design</li>
                   </ul>
                 </div>
 
                 {/* Thinking Skills */}
                 <div>
-                  <h3 style={{ fontSize: "0.75rem", fontFamily: "monospace", letterSpacing: "0.1em", textTransform: "uppercase", color: "#4b5563", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: "2px solid #d1d5db" }}>Thinking</h3>
-                  <ul style={{ listStyle: "none", padding: 0 }}>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>User-Centered Design</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>Problem Solving</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>Iteration</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937", marginBottom: "0.625rem" }}>Attention to Detail</li>
-                    <li style={{ fontSize: "0.875rem", fontWeight: 300, color: "#1f2937" }}>Collaboration</li>
+                  <h3 className="text-xs font-mono tracking-wider uppercase text-gray-600 mb-3 pb-2 border-b-2 border-gray-300">Thinking</h3>
+                  <ul className="space-y-1">
+                    <li className="text-xs sm:text-sm font-light text-gray-800">User-Centered Design</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">Problem Solving</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">Iteration</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">Attention to Detail</li>
+                    <li className="text-xs sm:text-sm font-light text-gray-800">Collaboration</li>
                   </ul>
                 </div>
               </div>
             </div>
 
             {/* Footer */}
-            <div style={{ paddingLeft: "4rem", paddingRight: "4rem", paddingTop: "1.5rem", paddingBottom: "1.5rem", backgroundColor: "#f9fafb", borderTop: "1px solid #e5e7eb" }}>
-              <p style={{ fontSize: "0.75rem", fontWeight: 300, color: "#4b5563", lineHeight: "1.625" }}>
+            <div className="px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 bg-gray-50 border-t border-gray-200">
+              <p className="text-xs sm:text-sm font-light text-gray-600 leading-relaxed">
                 Designer and developer who sees the complete picture. I build products that solve problems gracefully, 
                 creating experiences that feel intuitive and look considered. Every interface is a conversation between 
                 aesthetics and function—and I believe they should both win.
