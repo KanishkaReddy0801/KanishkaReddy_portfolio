@@ -121,8 +121,22 @@ export function Resume() {
               <h1 style={{ fontSize: "3.75rem", fontWeight: 300, marginBottom: "0", color: "#000000", fontFamily: "'Manrope', sans-serif" }}>Kanishka</h1>
               <h1 style={{ fontSize: "3.75rem", fontWeight: 700, marginBottom: "1rem", color: "#000000", fontFamily: "'Manrope', sans-serif" }}>Reddy</h1>
               <div style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "#4b5563" }}>
-                <p style={{ margin: "0.2rem 0" }}>krishnakanishkareddyalla@gmail.com</p>
-                <p style={{ margin: "0.2rem 0" }}>linkedin.com/in/kanishka-reddy-097a34210</p>
+                
+                <p>Portfolio: <a
+    href="https://www.kanishkareddy.space/"
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      margin: "0.2rem 0",
+      color: "#4b5563",
+      textDecoration: "underline",
+      cursor: "pointer",
+      fontSize: "18px",
+    }}
+  >
+    kanishkareddy.space
+  </a></p>
+  <p style={{ margin: "0.2rem 0" }}>Email: krishnakanishkareddyalla@gmail.com</p>
               </div>
             </div>
 
