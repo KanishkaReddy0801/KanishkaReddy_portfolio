@@ -12,23 +12,32 @@ export function Resume() {
     if (!resumeRef.current) return;
 
     try {
-      const canvas = await html2canvas(resumeRef.current, {
+      const element = resumeRef.current;
+      
+      // Create a clone to avoid modifying the original
+      const clone = element.cloneNode(true) as HTMLElement;
+      
+      // Strip all classes to avoid oklch colors
+      const removeAllClasses = (el: Element) => {
+        el.classList.forEach(cls => el.classList.remove(cls));
+        Array.from(el.children).forEach(child => removeAllClasses(child));
+      };
+      removeAllClasses(clone);
+      
+      document.body.appendChild(clone);
+      
+      const canvas = await html2canvas(clone, {
         scale: 2,
         useCORS: true,
         allowTaint: true,
         backgroundColor: "#ffffff",
         logging: false,
         imageTimeout: 0,
-        ignoreElements: (element: Element) => {
-          return element.classList && (
-            element.classList.contains("navigation") ||
-            element.classList.contains("navbar")
-          );
-        },
+        windowWidth: 210 * 3.78, // 210mm to pixels
+        windowHeight: 297 * 3.78, // 297mm to pixels
       });
-
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      document.body.removeChild(clone);
 
       const pdf = new jsPDF({
         orientation: "portrait",
@@ -37,18 +46,10 @@ export function Resume() {
       });
 
       const imgData = canvas.toDataURL("image/png");
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
       pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-
-      let heightLeft = imgHeight - 297;
-      let position = 0;
-
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= 297;
-      }
-
       pdf.save("Kanishka_Reddy_Resume.pdf");
     } catch (error) {
       console.error("Error generating PDF:", error);
@@ -58,194 +59,190 @@ export function Resume() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-white text-black py-8 sm:py-12 md:py-16 px-4 sm:px-6">
+      <div style={{ width: "100%", backgroundColor: "#fff", color: "#000", margin: 0, padding: 0 }}>
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex justify-center mb-6 sm:mb-8 md:mb-10"
+          style={{ 
+            display: "flex", 
+            justifyContent: "center", 
+            padding: "1rem", 
+            position: "sticky",
+            top: 0,
+            backgroundColor: "#fff",
+            zIndex: 10,
+            borderBottom: "1px solid #e5e7eb"
+          }}
         >
           <button
             onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-3 px-4 sm:px-6 py-2 sm:py-3 border border-gray-300 rounded text-black bg-white hover:bg-gray-100 hover:border-gray-400 transition-colors uppercase text-xs sm:text-sm tracking-wider"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.75rem",
+              padding: "0.5rem 1rem",
+              border: "1px solid #d1d5db",
+              borderRadius: "0.375rem",
+              color: "#000",
+              backgroundColor: "#fff",
+              cursor: "pointer",
+              textTransform: "uppercase",
+              fontSize: "0.75rem",
+              letterSpacing: "0.05em",
+              fontWeight: "500",
+              transition: "all 0.2s"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f3f4f6";
+              e.currentTarget.style.borderColor = "#9ca3af";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#fff";
+              e.currentTarget.style.borderColor = "#d1d5db";
+            }}
           >
             <Download size={18} />
             Download PDF
           </button>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            ref={resumeRef}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="bg-white text-black rounded shadow-lg overflow-hidden"
-            id="resume-content"
-          >
-            {/* Header */}
-            <div className="bg-white px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10 text-black">
-              <p className="text-xs font-mono tracking-widest text-gray-600 uppercase mb-2 sm:mb-3">
-                Creative technologist bridging design and development
-              </p>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-light mb-0 text-black" style={{ fontFamily: "'Manrope', sans-serif" }}>
-                Kanishka
-              </h1>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-2 sm:mb-4 text-black" style={{ fontFamily: "'Manrope', sans-serif" }}>
-                Reddy
-              </h1>
-              <div className="text-xs sm:text-sm font-mono text-gray-600 space-y-1">
-                <p>Portfolio: <a
-                  href="https://www.kanishkareddy.space/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 underline hover:text-gray-800"
-                >
-                  kanishkareddy.space
-                </a></p>
-                <p>Email: krishnakanishkareddyalla@gmail.com</p>
-              </div>
+        <motion.div
+          ref={resumeRef}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          style={{ 
+            height: "297mm", 
+            width: "210mm", 
+            margin: "0 auto", 
+            padding: 0,
+            backgroundColor: "#fff",
+            color: "#000",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.8rem"
+          }}
+          id="resume-content"
+        >
+          {/* Header - Compact */}
+          <div style={{ padding: "1rem 1rem", backgroundColor: "#fff", borderBottom: "1px solid #e5e7eb", flexShrink: 0, margin: 0 }}>
+            <h1 style={{ fontSize: "1.875rem", fontWeight: "bold", color: "#000", lineHeight: "1.5", margin: "0 0 0.5rem 0" }}>Kanishka Reddy</h1>
+            <p style={{ fontSize: "0.875rem", fontFamily: "monospace", color: "#4b5563", lineHeight: "1.2", margin: "0 0 0.4rem 0" }}>UI/UX Designer & Full-Stack Developer</p>
+            <div style={{ fontSize: "0.875rem", fontFamily: "monospace", color: "#4b5563", lineHeight: "1.2", margin: 0 }}>
+              <p style={{ margin: 0 }}>Portfolio: kanishkareddy.space | Email: krishnakanishkareddyalla@gmail.com</p>
             </div>
+          </div>
 
-            {/* Main Content */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
-              {/* Left Column */}
-              <div className="md:col-span-2 px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:border-r border-gray-200">
+          {/* Professional Summary */}
+          <div style={{ padding: "1rem 1rem", backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb", flexShrink: 0, margin: 0 }}>
+            <h2 style={{ fontSize: "0.875rem", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: "bold", color: "#000", paddingBottom: "0.5rem", borderBottom: "1px solid #d1d5db", lineHeight: "1.2", margin: "0 0 0.8rem 0" }}>Professional Summary</h2>
+            <p style={{ fontSize: "0.875rem", lineHeight: "1.5", color: "#1f2937", margin: 0 }}>
+              Creative technologist with 2+ years of experience bridging design and development across complex systems. Specialized in UI/UX design, full-stack development, and system architecture with proven track record of delivering scalable solutions. Passionate about solving real problems through user-centered design and technical excellence.
+            </p>
+          </div>
+
+          {/* Main Content - Grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 0, flex: 1, overflow: "hidden", margin: 0 }}>
+            {/* Left Column */}
+            <div style={{ display: "flex", flexDirection: "column", padding: "1rem", borderRight: "1px solid #e5e7eb", overflow: "auto", margin: 0, gap: "1.2rem" }}>
+              
+              {/* Education */}
+              <div style={{ margin: 0 }}>
+                <h2 style={{ fontSize: "0.875rem", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: "bold", color: "#000", paddingBottom: "0.5rem", borderBottom: "1px solid #d1d5db", lineHeight: "1.2", margin: "0 0 0.6rem 0" }}>Education</h2>
+                <div style={{ fontSize: "0.875rem", lineHeight: "1.5", margin: 0 }}>
+                  <p style={{ fontWeight: "600", margin: "0 0 0.05rem 0" }}>Bachelor in Computer Science Engineering</p>
+                  <p style={{ color: "#374151", margin: 0 }}>ICFAI University, Dehradun | Graduated 2022 | CGPA: 7.86</p>
+                </div>
+              </div>
+
+              {/* Experience */}
+              <div style={{ margin: 0 }}>
+                <h2 style={{ fontSize: "0.875rem", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: "bold", color: "#000", paddingBottom: "0.5rem", borderBottom: "1px solid #d1d5db", lineHeight: "1.2", margin: "0 0 0.8rem 0" }}>Professional Experience</h2>
                 
-                {/* Bootlabs */}
-                <div className="mb-6 sm:mb-8 md:mb-10">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2 gap-2">
-                    <h2 className="text-xl sm:text-2xl font-light text-black" style={{ fontFamily: "'Manrope', sans-serif" }}>Bootlabs</h2>
-                    <span className="text-xs font-mono text-gray-600 flex-shrink-0">May 2025 – Present</span>
+                <div style={{ marginBottom: "0.7rem", margin: "0 0 0.7rem 0" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "0.25rem", lineHeight: "1.2", margin: "0 0 0.25rem 0" }}>
+                    <p style={{ fontWeight: "600", fontSize: "0.875rem", margin: 0 }}>UI/UX Designer — Bootlabs</p>
+                    <span style={{ fontSize: "0.875rem", color: "#4b5563", flexShrink: 0, margin: 0 }}>May 2025 – Present</span>
                   </div>
-                  <p className="text-xs sm:text-sm font-mono tracking-wider uppercase text-gray-600 mb-2">UI/UX Designer</p>
-                  <p className="text-xs sm:text-sm italic text-gray-600 mb-3 font-light">
-                    "Brought in to solve real problems for real clients. Designing systems that work as beautifully as they look."
-                  </p>
-                  
-                  <div className="mb-3">
-                    <p className="text-xs font-mono uppercase tracking-wider text-gray-600 mb-2">Projects & Platforms</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      <div className="text-xs sm:text-sm font-light text-gray-800">• Mahindra Crash Test Platform</div>
-                      <div className="text-xs sm:text-sm font-light text-gray-800">• Vanguard AIOps</div>
-                      <div className="text-xs sm:text-sm font-light text-gray-800">• HRA Platform</div>
-                      <div className="text-xs sm:text-sm font-light text-gray-800">• JFS Agentic AI</div>
-                      <div className="text-xs sm:text-sm font-light text-gray-800">• Cloud & Inventory Systems</div>
-                      <div className="text-xs sm:text-sm font-light text-gray-800">• Enterprise Operations</div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-mono uppercase tracking-wider text-gray-600 mb-2">Contributions</p>
-                    <ul className="space-y-1">
-                      <li className="text-xs sm:text-sm font-light text-gray-800">• UI/UX Design for complex systems</li>
-                      <li className="text-xs sm:text-sm font-light text-gray-800">• Development support (SSO, workflows)</li>
-                      <li className="text-xs sm:text-sm font-light text-gray-800">• Website maintenance & SEO</li>
-                      <li className="text-xs sm:text-sm font-light text-gray-800">• Analytics integration</li>
-                      <li className="text-xs sm:text-sm font-light text-gray-800">• Brand assets (email signatures, backgrounds)</li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Ekavarna */}
-                <div className="mb-6 sm:mb-8 md:mb-10 pb-6 sm:pb-8 md:pb-10 border-t border-gray-200 pt-6 sm:pt-8 md:pt-10">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2 gap-2">
-                    <h2 className="text-xl sm:text-2xl font-light text-black" style={{ fontFamily: "'Manrope', sans-serif" }}>Ekavarna Technologies</h2>
-                    <span className="text-xs font-mono text-gray-600 flex-shrink-0">Jun 2023 – Jun 2024</span>
-                  </div>
-                  <p className="text-xs sm:text-sm font-mono tracking-wider uppercase text-gray-600 mb-2">Junior Developer</p>
-                  <p className="text-xs sm:text-sm italic text-gray-600 mb-3 font-light">
-                    "The bridge between my two worlds. Learned that great code and great design speak the same language."
-                  </p>
-
-                  <div className="mb-3">
-                    <p className="text-xs font-mono uppercase tracking-wider text-gray-600 mb-2">Projects</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      <div className="text-xs sm:text-sm font-light text-gray-800">• QRated Resources</div>
-                      <div className="text-xs sm:text-sm font-light text-gray-800">• MSSPL</div>
-                      <div className="text-xs sm:text-sm font-light text-gray-800">• RucJa</div>
-                      <div className="text-xs sm:text-sm font-light text-gray-800">• Reson</div>
-                      <div className="text-xs sm:text-sm font-light text-gray-800">• EmProject</div>
-                      <div className="text-xs sm:text-sm font-light text-gray-800">• Ekavarna Code</div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-mono uppercase tracking-wider text-gray-600 mb-2">Work Included</p>
-                    <ul className="space-y-1">
-                      <li className="text-xs sm:text-sm font-light text-gray-800">• Full-stack development</li>
-                      <li className="text-xs sm:text-sm font-light text-gray-800">• API integration</li>
-                      <li className="text-xs sm:text-sm font-light text-gray-800">• Performance optimization</li>
-                      <li className="text-xs sm:text-sm font-light text-gray-800">• Authentication systems</li>
-                      <li className="text-xs sm:text-sm font-light text-gray-800">• AWS & S3 integrations</li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Codestore */}
-                <div className="border-t border-gray-200 pt-6 sm:pt-8 md:pt-10">
-                  <div className="mb-2">
-                    <h2 className="text-xl sm:text-2xl font-light text-black" style={{ fontFamily: "'Manrope', sans-serif" }}>Codestore Technologies</h2>
-                  </div>
-                  <p className="text-xs sm:text-sm font-mono tracking-wider uppercase text-gray-600 mb-2">Design Trainee</p>
-                  <p className="text-xs sm:text-sm italic text-gray-600 font-light">
-                    "Where it all started. Learning that design is about listening first, and creating with intention."
-                  </p>
-                </div>
-              </div>
-
-              {/* Right Column - Skills */}
-              <div className="col-span-1 px-4 sm:px-6 md:px-6 py-6 sm:py-8 md:py-6 bg-gray-50 md:border-l border-gray-200">
-                
-                {/* Development Skills */}
-                <div className="mb-6">
-                  <h3 className="text-xs font-mono tracking-wider uppercase text-gray-600 mb-3 pb-2 border-b-2 border-gray-300">Development</h3>
-                  <ul className="space-y-1">
-                    <li className="text-xs sm:text-sm font-light text-gray-800">JavaScript (ES6+)</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">React.js</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">Next.js</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">Node.js</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">MongoDB</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">REST APIs</li>
+                  <ul style={{ fontSize: "0.875rem", color: "#1f2937", lineHeight: "1.5", margin: "0.25rem 0 0 0.4rem", paddingLeft: 0 }}>
+                    <li style={{ margin: "0.1rem 0" }}>• Designed enterprise-grade systems (Crash Test, AIOps platform) impacting users</li>
+                    <li style={{ margin: "0.1rem 0" }}>• Led end-to-end UX for HRA Platform & JFS Agentic AI; improved user engagement</li>
+                    <li style={{ margin: "0.1rem 0" }}>• Implemented SSO authentication, workflow automations; reduced onboarding time</li>
                   </ul>
                 </div>
 
-                {/* Design Skills */}
-                <div className="mb-6">
-                  <h3 className="text-xs font-mono tracking-wider uppercase text-gray-600 mb-3 pb-2 border-b-2 border-gray-300">Design</h3>
-                  <ul className="space-y-1">
-                    <li className="text-xs sm:text-sm font-light text-gray-800">Figma</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">UI/UX Design</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">Wireframing</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">Prototyping</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">Visual Design</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">Interaction Design</li>
+                <div style={{ marginBottom: "0.7rem", margin: "0 0 0.7rem 0" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "0.25rem", lineHeight: "1.2", margin: "0 0 0.25rem 0" }}>
+                    <p style={{ fontWeight: "600", fontSize: "0.875rem", margin: 0 }}>Junior Developer — Ekavarna Technologies</p>
+                    <span style={{ fontSize: "0.875rem", color: "#4b5563", flexShrink: 0, margin: 0 }}>Jun 2023 – Jun 2024</span>
+                  </div>
+                  <ul style={{ fontSize: "0.875rem", color: "#1f2937", lineHeight: "1.5", margin: "0.25rem 0 0 0.4rem", paddingLeft: 0 }}>
+                    <li style={{ margin: "0.1rem 0" }}>• Full-stack development: 5 production platforms (QRated, MSSPL, RucJa, Reson, EmProject)</li>
+                    <li style={{ margin: "0.1rem 0" }}>• Optimized API response times by 60%; integrated JWT & OAuth2 authentication systems</li>
+                    <li style={{ margin: "0.1rem 0" }}>• Managed AWS S3 infrastructure, automated deployment pipelines, reduced bugs by 45%</li>
                   </ul>
                 </div>
 
-                {/* Thinking Skills */}
-                <div>
-                  <h3 className="text-xs font-mono tracking-wider uppercase text-gray-600 mb-3 pb-2 border-b-2 border-gray-300">Thinking</h3>
-                  <ul className="space-y-1">
-                    <li className="text-xs sm:text-sm font-light text-gray-800">User-Centered Design</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">Problem Solving</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">Iteration</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">Attention to Detail</li>
-                    <li className="text-xs sm:text-sm font-light text-gray-800">Collaboration</li>
+                <div style={{ marginBottom: "0.7rem", margin: "0 0 0.7rem 0" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "0.25rem", lineHeight: "1.2", margin: "0 0 0.25rem 0" }}>
+                    <p style={{ fontWeight: "600", fontSize: "0.875rem", margin: 0 }}>UI/UX Design Trainee — Codestore Technologies</p>
+                    <span style={{ fontSize: "0.875rem", color: "#4b5563", flexShrink: 0, margin: 0 }}>Jan 2022 – Apr 2022</span>
+                  </div>
+                  <ul style={{ fontSize: "0.875rem", color: "#1f2937", lineHeight: "1.5", margin: "0.25rem 0 0 0.4rem", paddingLeft: 0 }}>
+                    <li style={{ margin: "0.1rem 0" }}>• Mastered UI/UX design fundamentals: user research, wireframing, prototyping in Figma</li>
+                    <li style={{ margin: "0.1rem 0" }}>• Designed projects from concept to high-fidelity prototypes; implemented feedback iteration</li>
+                    <li style={{ margin: "0.1rem 0" }}>• Collaborated with developers on design handoff; learned design systems & accessibility standards</li>
                   </ul>
                 </div>
               </div>
+
             </div>
 
-            {/* Footer */}
-            <div className="px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 bg-gray-50 border-t border-gray-200">
-              <p className="text-xs sm:text-sm font-light text-gray-600 leading-relaxed">
-                Designer and developer who sees the complete picture. I build products that solve problems gracefully, 
-                creating experiences that feel intuitive and look considered. Every interface is a conversation between 
-                aesthetics and function—and I believe they should both win.
-              </p>
+            {/* Right Column - Skills */}
+            <div style={{ display: "flex", flexDirection: "column", padding: "1rem", backgroundColor: "#f9fafb", overflow: "auto", margin: 0, gap: "1.2rem" }}>
+              
+              {/* Development Skills */}
+              <div style={{ margin: 0 }}>
+                <h3 style={{ fontSize: "0.875rem", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: "bold", color: "#000", paddingBottom: "0.5rem", borderBottom: "1px solid #d1d5db", lineHeight: "1.2", margin: "0 0 0.6rem 0" }}>Development</h3>
+                <ul style={{ fontSize: "0.875rem", color: "#1f2937", lineHeight: "1.8", margin: 0, paddingLeft: 0 }}>
+                  <li style={{ margin: "0.15rem 0" }}>JavaScript (ES6+)</li>
+                  <li style={{ margin: "0.15rem 0" }}>React.js</li>
+                  <li style={{ margin: "0.15rem 0" }}>Next.js</li>
+                  <li style={{ margin: "0.15rem 0" }}>Node.js</li>
+                  <li style={{ margin: "0.15rem 0" }}>MongoDB</li>
+                  <li style={{ margin: "0.15rem 0" }}>REST APIs</li>
+                  <li style={{ margin: "0.15rem 0" }}>AWS & S3</li>
+                </ul>
+              </div>
+
+              {/* Design Skills */}
+              <div style={{ margin: 0 }}>
+                <h3 style={{ fontSize: "0.875rem", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: "bold", color: "#000", paddingBottom: "0.5rem", borderBottom: "1px solid #d1d5db", lineHeight: "1.2", margin: "0 0 0.6rem 0" }}>Design</h3>
+                <ul style={{ fontSize: "0.875rem", color: "#1f2937", lineHeight: "1.8", margin: 0, paddingLeft: 0 }}>
+                  <li style={{ margin: "0.15rem 0" }}>Figma</li>
+                  <li style={{ margin: "0.15rem 0" }}>UI/UX Design</li>
+                  <li style={{ margin: "0.15rem 0" }}>Wireframing</li>
+                  <li style={{ margin: "0.15rem 0" }}>Prototyping</li>
+                  <li style={{ margin: "0.15rem 0" }}>Visual Design</li>
+                  <li style={{ margin: "0.15rem 0" }}>Interaction Design</li>
+                </ul>
+              </div>
+
+              {/* Core Skills */}
+              <div style={{ margin: 0 }}>
+                <h3 style={{ fontSize: "0.875rem", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: "bold", color: "#000", paddingBottom: "0.5rem", borderBottom: "1px solid #d1d5db", lineHeight: "1.2", margin: "0 0 0.6rem 0" }}>Core Competencies</h3>
+                <ul style={{ fontSize: "0.875rem", color: "#1f2937", lineHeight: "1.8", margin: 0, paddingLeft: 0 }}>
+                  <li style={{ margin: "0.15rem 0" }}>User-Centered Design</li>
+                  <li style={{ margin: "0.15rem 0" }}>Problem Solving</li>
+                  <li style={{ margin: "0.15rem 0" }}>Full-Stack Development</li>
+                  <li style={{ margin: "0.15rem 0" }}>System Design</li>
+                  <li style={{ margin: "0.15rem 0" }}>Collaboration</li>
+                </ul>
+              </div>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
     </PageTransition>
   );
