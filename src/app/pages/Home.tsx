@@ -295,7 +295,7 @@ export function Home() {
                     <h4 className="text-4xl md:text-5xl font-serif group-hover:text-accent transition-colors">Ekavarna Technologies</h4>
                     <p className="text-xl text-foreground/80 mt-2 font-light">Junior Developer</p>
                   </div>
-                  <span className="text-sm font-mono text-muted-foreground mt-4 md:mt-0 uppercase tracking-widest">Jun 2023 – Jun 2024</span>
+                  <span className="text-sm font-mono text-muted-foreground mt-4 md:mt-0 uppercase tracking-widest">Jun 2023 – May 2025</span>
                 </div>
                 
                 <p className="text-2xl font-serif italic text-muted-foreground mb-10 leading-relaxed">

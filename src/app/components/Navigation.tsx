@@ -32,23 +32,25 @@ export function Navigation() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
       className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border"
+      aria-label="Primary navigation"
     >
+      <a href="#main-content" className="skip-link">Skip to content</a>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         <Link to="/" className="hover:opacity-70 transition-opacity flex items-center gap-3 flex-shrink-0">
           <img 
             src={logoImage} 
             alt="Kanishka Reddy Logo" 
-            className="h-8 sm:h-10 w-auto object-contain dark:invert" 
+            className="h-10 sm:h-12 w-auto object-contain dark:invert" 
           />
         </Link>
         
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-10">
           {links.map((link) => (
             <Link
               key={link.path}
               to={link.path}
-              className={`relative text-xs uppercase tracking-widest font-medium transition-colors ${
+              className={`relative text-sm uppercase tracking-widest font-medium transition-colors ${
                 isActive(link.path) 
                   ? "text-foreground" 
                   : "text-muted-foreground hover:text-foreground"
@@ -58,7 +60,7 @@ export function Navigation() {
               {isActive(link.path) && (
                 <motion.div
                   layoutId="activeNav"
-                  className="absolute -bottom-[21px] left-0 right-0 h-[1px] bg-foreground"
+                  className="absolute -bottom-[21px] left-0 right-0 h-[2px] bg-foreground"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}

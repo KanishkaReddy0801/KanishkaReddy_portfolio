@@ -113,15 +113,96 @@ export function CaseStudy() {
           </div>
         </section>
 
-        {/* EMBED UX REPORT */}
-        <section className="px-6 md:px-0 py-5 max-w-7xl mx-auto">
-          <iframe
-            src={project.htmlFile}
-            title={project.title}
-            width="100%"
-            style={{ border: 0, display: "block", height: "80vh", }}
-            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-          />
+        {/* UX REPORT - structured and authored in-app (no external HTML embeds) */}
+        <section className="px-6 md:px-12 py-12 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <main className="col-span-2 ux-report">
+              <h3 className="text-sm uppercase tracking-widest text-muted-foreground">Executive Summary</h3>
+              <p className="mt-3 text-lg text-foreground leading-relaxed">This report provides a focused UX & accessibility evaluation of <strong>{project.title}</strong>. It covers usability heuristics, accessibility (WCAG) findings, cognitive and interaction laws, information architecture, visual hierarchy, and prioritized recommendations for implementation.</p>
+
+              <article className="mt-8 ux-section">
+                <h4 className="text-xl font-serif mb-3">Heuristic Evaluation</h4>
+                <ul className="list-disc pl-5 text-base leading-relaxed text-foreground">
+                  <li><strong>Visibility of system status:</strong> Provide clear progress indicators for long-running actions and loading states to satisfy Nielsen heuristics.</li>
+                  <li><strong>Match between system and the real world:</strong> Use familiar domain language and consistent affordances across flows.</li>
+                  <li><strong>Error prevention & recovery:</strong> Include inline validation, clear error messages, and undo affordances where destructive actions exist.</li>
+                </ul>
+              </article>
+
+              <article className="mt-8 ux-section">
+                <h4 className="text-xl font-serif mb-3">Accessibility (WCAG) Analysis</h4>
+                <p className="text-base text-foreground leading-relaxed">Checked against <strong>WCAG 2.1 AA</strong> principles — key points below reference specific success criteria and recommended fixes.</p>
+                <ul className="mt-3 space-y-2 text-base">
+                  <li><strong>Contrast (1.4.3):</strong> Ensure text and interactive elements meet a contrast ratio of at least 4.5:1 for normal text and 3:1 for UI components. Use the theme variables and test with automated tools (axe, Lighthouse).</li>
+                  <li><strong>Keyboard accessibility (2.1):</strong> All interactive controls must be reachable and operable via keyboard. Ensure visible focus states, skip links, and semantic HTML (button, nav, heading structure).</li>
+                  <li><strong>Labels & instructions (3.3):</strong> Inputs and form controls require explicit labels and helpful error text. Use ARIA only when semantic HTML is insufficient.</li>
+                </ul>
+              </article>
+
+              <article className="mt-8 ux-section">
+                <h4 className="text-xl font-serif mb-3">Interaction & Cognitive Laws</h4>
+                <ul className="list-disc pl-5 text-base leading-relaxed text-foreground">
+                  <li><strong>Fitts' Law:</strong> Target interactive elements that are frequently used should be larger and placed near likely pointer paths to reduce movement time.</li>
+                  <li><strong>Hick's Law:</strong> Limit options in primary decision points. Use progressive disclosure for complex tasks to reduce decision time.</li>
+                  <li><strong>Gestalt Principles:</strong> Apply proximity, similarity and visual hierarchy to group related items and reduce cognitive load.</li>
+                </ul>
+              </article>
+
+              <article className="mt-8 ux-section">
+                <h4 className="text-xl font-serif mb-3">Information Architecture & Content</h4>
+                <p className="text-base leading-relaxed">Improve discoverability by tightening navigation labels, creating predictable pathways for top tasks, and ensuring metadata (titles, descriptions) reflect task intent. Add breadcrumbs for deep flows and ensure heading structure (H1→H2→H3) maps to content hierarchy.</p>
+              </article>
+
+              <article className="mt-8 ux-section">
+                <h4 className="text-xl font-serif mb-3">Performance & Technical Notes</h4>
+                <ul className="list-disc pl-5 text-base leading-relaxed text-foreground">
+                  <li><strong>Performance budgets:</strong> Keep first contentful paint under 1.5s for primary landing, lazy-load offscreen images, and use compression + modern image formats (AVIF/WebP).</li>
+                  <li><strong>SPA considerations:</strong> Use route-level code-splitting, preserve focus on navigation, and ensure server-side rendering provides meaningful meta for SEO and social sharing.</li>
+                  <li><strong>Testing:</strong> Integrate automated accessibility checks (axe-core), Lighthouse CI, and user testing with assistive technology (NVDA/VoiceOver).</li>
+                </ul>
+              </article>
+
+              <article className="mt-8 ux-section">
+                <h4 className="text-xl font-serif mb-3">Prioritized Recommendations</h4>
+                <ol className="list-decimal pl-5 text-base leading-relaxed text-foreground">
+                  <li>Fix color-contrast failures across primary CTAs and body text (WCAG 2.1 AA).</li>
+                  <li>Replace non-semantic wrappers for controls with native elements and add ARIA where necessary.</li>
+                  <li>Design and document a keyboard interaction spec for all components (focus order, shortcuts, traps).</li>
+                  <li>Audit performance and apply lazy-loading, responsive images, and minimized bundles for improved LCP.</li>
+                </ol>
+              </article>
+
+              <article className="mt-8 ux-section">
+                <h4 className="text-xl font-serif mb-3">Success Metrics</h4>
+                <p className="text-base leading-relaxed">Measure outcomes with a combination of qualitative and quantitative metrics: task completion rate, time-on-task, error rate, SUS score, accessibility compliance score, and performance indicators (LCP, TTI).</p>
+              </article>
+            </main>
+
+            <aside className="col-span-1">
+              <div className="sticky top-24 space-y-6">
+                <div className="bg-card p-4 rounded-md shadow-sm">
+                  <h5 className="text-sm uppercase tracking-widest text-muted-foreground mb-2">Project Details</h5>
+                  <p className="text-base"><strong>Tags:</strong> {project.tags.join(", ")}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Source: <a href={project.link} target="_blank" rel="noreferrer" className="text-accent hover:underline">Live site</a></p>
+                </div>
+
+                <div className="bg-card p-4 rounded-md shadow-sm">
+                  <h5 className="text-sm uppercase tracking-widest text-muted-foreground mb-2">Implementation Notes</h5>
+                  <p className="text-sm text-muted-foreground">Recommend implementing fixes in incremental sprints and validating each change with accessibility and UX regression tests.</p>
+                </div>
+
+                <div className="bg-card p-4 rounded-md shadow-sm">
+                  <h5 className="text-sm uppercase tracking-widest text-muted-foreground mb-2">Image Gallery</h5>
+                  <div className="grid grid-cols-2 gap-2">
+                    <img src={IMG_WHISKEY} alt="screenshot 1" className="w-full h-24 object-cover rounded" />
+                    <img src={MOCK_IMAGES_WHISKEY[0]} alt="screenshot 2" className="w-full h-24 object-cover rounded" />
+                    <img src={MOCK_IMAGES_WHISKEY[1]} alt="screenshot 3" className="w-full h-24 object-cover rounded" />
+                    <img src={IMG_NOTED} alt="screenshot 4" className="w-full h-24 object-cover rounded" />
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
         </section>
       </div>
     </PageTransition>
