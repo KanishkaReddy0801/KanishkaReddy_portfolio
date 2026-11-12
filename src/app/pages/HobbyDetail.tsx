@@ -23,36 +23,36 @@ const hobbiesData = {
             review: "Love the way Keyes wrote this — every page just hits different. Reading this as an empathetic person is absolutely no joke, your heart cannot take it.",
             image: "https://i.pinimg.com/736x/46/20/cd/4620cd069e0da084fc5d5d4a2b37af50.jpg"
           },
-          {
-            title: "Oliver Twist",
-            author: "Charles Dickens",
-            review: "Dickens just knew what he was doing — the darkness, the resilience, all of it wrapped so brilliantly. A timeless one that genuinely stays with you.",
-            image: "https://i.pinimg.com/1200x/9c/11/b0/9c11b0ad59fc53f9ae60abe29cd8503e.jpg"
-          },
+          // {
+          //   title: "Oliver Twist",
+          //   author: "Charles Dickens",
+          //   review: "Dickens just knew what he was doing — the darkness, the resilience, all of it wrapped so brilliantly. A timeless one that genuinely stays with you.",
+          //   image: "https://i.pinimg.com/1200x/9c/11/b0/9c11b0ad59fc53f9ae60abe29cd8503e.jpg"
+          // },
           {
             title: "Animal Farm",
             author: "George Orwell",
             review: "Deceptively simple but it will make you think for days. Love how something this short can say this much about power and how it just corrupts everything.",
             image: "https://i.pinimg.com/736x/cd/1d/8d/cd1d8d4a7f096bb842cf79a085c812b3.jpg"
           },
-          {
-            title: "The Trial",
-            author: "Franz Kafka",
-            review: "This book will genuinely disorient you and I mean that in the best way. The suffocating bureaucratic spiral is so unsettling it just does not leave your head.",
-            image: "https://i.pinimg.com/736x/7e/e6/dd/7ee6ddcebbb1f8f0130283c0e7cb7531.jpg"
-          },
+          // {
+          //   title: "The Trial",
+          //   author: "Franz Kafka",
+          //   review: "This book will genuinely disorient you and I mean that in the best way. The suffocating bureaucratic spiral is so unsettling it just does not leave your head.",
+          //   image: "https://i.pinimg.com/736x/7e/e6/dd/7ee6ddcebbb1f8f0130283c0e7cb7531.jpg"
+          // },
           {
             title: "Kafka on the Shore",
             author: "Haruki Murakami",
             review: "Murakami's prose is something else — dreamy, hypnotic, and just pulls you in completely. Love the way reality and surrealism blend like it is the most normal thing.",
             image: "https://i.pinimg.com/1200x/3c/44/1c/3c441cbeb1da5e8fba433e056b41217b.jpg"
           },
-          {
-            title: "The Catcher in the Rye",
-            author: "J.D. Salinger",
-            review: "Holden's voice is so raw it is almost uncomfortable — and that is exactly why it works. Every reread hits harder, love the way this one never gets old.",
-            image: "https://i.pinimg.com/736x/c6/77/b0/c677b0ea2177d171100247f354cc8f0e.jpg"
-          },
+          // {
+          //   title: "The Catcher in the Rye",
+          //   author: "J.D. Salinger",
+          //   review: "Holden's voice is so raw it is almost uncomfortable — and that is exactly why it works. Every reread hits harder, love the way this one never gets old.",
+          //   image: "https://i.pinimg.com/736x/c6/77/b0/c677b0ea2177d171100247f354cc8f0e.jpg"
+          // },
           {
             title: "Cosmos",
             author: "Carl Sagan",
