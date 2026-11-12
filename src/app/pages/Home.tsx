@@ -39,7 +39,7 @@ export function Home() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
-            className="absolute top-[15%] right-[5%] md:right-[15%] w-[65vw] md:w-[35vw] max-w-lg aspect-[3/4] z-0 pointer-events-none"
+            className="relative z-0 mb-6 mt-20 w-[65vw] max-w-lg self-end pointer-events-none aspect-[3/4] md:absolute md:top-[15%] md:right-[15%] md:mb-0 md:mt-0 md:w-[35vw]"
             style={{ y: yParallax }}
           >
             <ImageWithFallback 
@@ -49,12 +49,12 @@ export function Home() {
             />
           </motion.div>
 
-          <div className="relative z-10 w-full mt-32 md:mt-0 max-w-7xl mx-auto">
+          <div className="relative z-10 w-full mt-0 md:mt-0 max-w-7xl mx-auto">
             <motion.h1 
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-5xl sm:text-7xl md:text-[9rem] lg:text-[11rem] leading-[0.85] tracking-tighter uppercase font-serif text-foreground break-words relative z-10"
+              className="text-5xl sm:text-7xl md:text-[7rem] lg:text-[9rem] xl:text-[11rem] leading-[0.85] tracking-tighter uppercase font-serif text-foreground break-words relative z-10"
             >
               Kanishka <br className="hidden md:block"/> Reddy
             </motion.h1>
